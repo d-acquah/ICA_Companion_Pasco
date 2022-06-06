@@ -1,12 +1,14 @@
 // @dart=2.9
 import 'package:ica_companion_pasco/home_year_page.dart';
-import 'package:ica_companion_pasco/pasco_model.dart';
 import 'package:flutter/material.dart';
+import 'package:ica_companion_pasco/models/pasco_model.dart';
+import 'package:ica_companion_pasco/widgets/year_list_tile.dart';
 
 class TopicsYearsPage extends StatelessWidget {
-  TopicsYearsPage({Key key, this.subTopics}) : super(key: key);
+  TopicsYearsPage({Key key, this.monthYear, this.title}) : super(key: key);
   final ScrollController _scrollController = ScrollController();
-  final SubTopics subTopics;
+  final List<MonthYear> monthYear;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class TopicsYearsPage extends StatelessWidget {
         centerTitle: false,
         iconTheme: const IconThemeData(color: Colors.black),
         title: Text(
-          subTopics.name,
+          title,
           style: const TextStyle(
               fontSize: 26, fontWeight: FontWeight.w600, color: Colors.black),
         ),
@@ -40,29 +42,13 @@ class TopicsYearsPage extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: ListView(
-          controller: _scrollController,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return HomeYearView(
-                      homeYear: HomeYear(
-                    name: "",
-                    // Open the pdf document
-                  ));
-                }));
-              },
-              title: const Text(
-                'Nov 2012 Q1',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
-              ),
-            ),
-          ],
-        ),
+        child: ListView.builder(
+              itemCount: monthYear.length,
+              itemBuilder: (context, index) {
+                return YearListTile(
+                  monthYear: monthYear[index],
+                );
+              })
       ),
     );
   }

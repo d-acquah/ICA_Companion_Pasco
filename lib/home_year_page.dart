@@ -1,6 +1,5 @@
-// @dart=2.9
-import 'package:ica_companion_pasco/pasco_model.dart';
 import 'package:flutter/material.dart';
+import 'package:ica_companion_pasco/models/pasco_model.dart';
 
 class HomeYearView extends StatelessWidget {
   HomeYearView({Key key, this.homeYear}) : super(key: key);
