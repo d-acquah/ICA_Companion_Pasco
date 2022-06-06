@@ -58,6 +58,22 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: 'Financial Accounting',
+                    topics: [
+                      Topic(
+                        name: "Bank Reconciliation", 
+                        monthYear: [
+                          MonthYear(name: "1.1 May 2021 Q3 A", link: "google.com"),
+                          MonthYear(name: "1.1 Nov 2020 Q3 B", link: "google.com"),
+                        ]
+                      ),
+                      Topic(
+                        name: "Tangible Non-Current Asset", 
+                        monthYear: [
+                          MonthYear(name: "1.1 May 2021 Q3 A", link: "google.com"),
+                          MonthYear(name: "1.1 Nov 2020 Q3 B", link: "google.com"),
+                        ]
+                      ),
+                    ]
                   ));
                 }));
               },
@@ -76,7 +92,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -95,7 +111,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -114,7 +130,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -143,7 +159,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -162,7 +178,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -181,7 +197,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -200,7 +216,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -219,7 +235,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -238,7 +254,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -267,7 +283,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -286,7 +302,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                        topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -305,7 +321,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },
@@ -324,7 +340,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "",
-                    subTopics: "",
+                    topics: [],
                   ));
                 }));
               },

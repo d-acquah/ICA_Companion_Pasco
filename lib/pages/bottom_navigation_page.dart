@@ -16,9 +16,11 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   int currentIndex = 0;
   final screens = [
     HomePage(),
-    TrendPage(),
+    // TrendPage(),
+    Container(),
     TopicsPage(),
-    PremiumPage(),
+    // PremiumPage(),
+    Container()
 
   ];
   @override
