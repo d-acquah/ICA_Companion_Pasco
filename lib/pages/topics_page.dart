@@ -61,15 +61,15 @@ class TopicsPage extends StatelessWidget {
                       Topic(
                         name: "Bank Reconciliation", 
                         monthYear: [
-                          MonthYear(name: "1.1 May 2021 Q3 A", link: "google.com"),
-                          MonthYear(name: "1.1 Nov 2020 Q3 B", link: "google.com"),
+                          MonthYear(name: "1.1 May 2021 Q3 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
+                          MonthYear(name: "1.1 Nov 2020 Q3 B", link: "https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf"),
                         ]
                       ),
                       Topic(
                         name: "Tangible Non-Current Asset", 
                         monthYear: [
-                          MonthYear(name: "1.1 May 2021 Q3 A", link: "google.com"),
-                          MonthYear(name: "1.1 Nov 2020 Q3 B", link: "google.com"),
+                          MonthYear(name: "1.1 May 2021 Q3 A", link: "https://google.com"),
+                          MonthYear(name: "1.1 Nov 2020 Q3 B", link: "https://google.com"),
                         ]
                       ),
                     ]

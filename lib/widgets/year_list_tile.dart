@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
+import 'package:ica_companion_pasco/pdf_viewer.dart';
 
 class YearListTile extends StatelessWidget {
   final MonthYear monthYear;
@@ -12,6 +13,9 @@ class YearListTile extends StatelessWidget {
       ListTile(
         title: Text(monthYear.name),
         onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context){
+            return PDFViewer( monthYear: monthYear);
+          }));
           // open the pdf link using url_launcher package (monthYear.link)
         },
       ),
