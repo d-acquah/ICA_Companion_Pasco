@@ -23,10 +23,10 @@ class TopicListTile extends StatelessWidget {
       const SizedBox(
         height: 10,
       ),
-      Container(
-        height: 1,
-        color: Colors.grey,
-      )
+      const Divider(
+              indent: 0,
+              thickness: 2,
+            ),
     ]);
   }
 }

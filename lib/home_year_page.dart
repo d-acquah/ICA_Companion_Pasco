@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
+import 'package:ica_companion_pasco/widgets/year_list_tile.dart';
 
-class HomeYearView extends StatelessWidget {
-  HomeYearView({Key key, this.homeYear}) : super(key: key);
+class HomeYearPage extends StatelessWidget {
+  HomeYearPage({Key key, this.homeYear, this.monthYear, this.name})
+      : super(key: key);
   final ScrollController _scrollController = ScrollController();
+  final List<MonthYear> monthYear;
+  final String name;
   final HomeYear homeYear;
 
   @override
@@ -38,30 +42,13 @@ class HomeYearView extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: ListView(
-          controller: _scrollController,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-            ),
-            ListTile(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return HomeYearView(
-                      homeYear: HomeYear(
-                    name: "",
-                    // Open the pdf document
-                  ));
-                }));
-              },
-              title: const Text(
-                'Nov 2012 Q1',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
-              ),
-            ),
-          ],
-        ),
-      ),
+          child: ListView.builder(
+              itemCount: homeYear.monthYear.length,
+              itemBuilder: (context, index) {
+                return YearListTile(
+                  monthYear: homeYear.monthYear[index],
+                );
+              })),
     );
   }
 }
