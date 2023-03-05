@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = ica_companion_pasco
+PRODUCT_NAME = ICA Companion : Pasco;
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.icaCompanionPasco
+PRODUCT_BUNDLE_IDENTIFIER = com.danielowusuacquah.ICA;
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2022 com.example. All rights reserved.

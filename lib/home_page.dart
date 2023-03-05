@@ -59,8 +59,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Financial Accounting",
                     monthYear: [
-                      MonthYear(name: "1.1 Apr 2022", link: ""),
-                      MonthYear(name: "1.1 Nov 2021", link: ""),
+                      MonthYear(name: "1.1 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
+                      MonthYear(name: "1.1 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.1_financial_accounting.pdf"),
+                      MonthYear(name: "1.1 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.1_financial_accounting.pdf"),
                       MonthYear(
                           name: "1.1 May 2021",
                           link:
@@ -129,8 +130,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Business Management & Information System",
                     monthYear: [
-                      MonthYear(name: "1.2 Apr 2022", link: ""),
-                      MonthYear(name: "1.2 Nov 2021", link: ""),
+                      MonthYear(name: "1.2 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
+                      MonthYear(name: "1.2 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
+                      MonthYear(name: "1.2 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.2_business_management_info_systems.pdf"),
                       MonthYear(
                           name: "1.2 May 2021",
                           link:
@@ -199,8 +201,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Business & Corporate Law",
                     monthYear: [
-                      MonthYear(name: "1.3 Apr 2022", link: ""),
-                      MonthYear(name: "1.3 Nov 2021", link: ""),
+                      MonthYear(name: "1.3 Aug 2022", link: ""),
+                      MonthYear(name: "1.3 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.3_business-corporate-law.pdf"),
+                      MonthYear(name: "1.3 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.3_business-corporate-law.pdf"),
                       MonthYear(
                           name: "1.3 May 2021",
                           link:
@@ -269,8 +272,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Introduction to Management Accounting",
                     monthYear: [
-                      MonthYear(name: "1.4 Apr 2022", link: ""),
-                      MonthYear(name: "1.4 Nov 2021", link: ""),
+                      MonthYear(name: "1.4 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_1.4_introduction_to_management_accounting.pdf"),
+                      MonthYear(name: "1.4 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_1.4_introduction_to_management_accounting.pdf"),
+                      MonthYear(name: "1.4 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(
                           name: "1.4 May 2021",
                           link:
@@ -317,8 +321,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Financial Reporting",
                     monthYear: [
-                      MonthYear(name: "2.1 Apr 2022", link: ""),
-                      MonthYear(name: "2.1 Nov 2021", link: ""),
+                      MonthYear(name: "2.1 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
+                      MonthYear(name: "2.1 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
+                      MonthYear(name: "2.1 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.1_financial_reporting.pdf"),
                       MonthYear(
                           name: "2.1 May 2021",
                           link:
@@ -387,8 +392,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Management Accounting",
                     monthYear: [
-                      MonthYear(name: "2.2 Apr 2022", link: ""),
-                      MonthYear(name: "2.2 Nov 2021", link: ""),
+                      MonthYear(name: "2.2 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.2_management_accounting.pdf"),
+                      MonthYear(name: "2.2 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.2_management_accounting.pdf"),
+                      MonthYear(name: "2.2 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.2_management_accounting.pdf"),
                       MonthYear(
                           name: "2.2 May 2021",
                           link:
@@ -457,8 +463,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Audit & Assurance",
                     monthYear: [
-                      MonthYear(name: "2.3 Apr 2022", link: ""),
-                      MonthYear(name: "2.3 Nov 2021", link: ""),
+                      MonthYear(name: "2.3 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
+                      MonthYear(name: "2.3 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.3_audit_assurance.pdf"),
+                      MonthYear(name: "2.3 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.3_audit_assurance.pdf"),
                       MonthYear(
                           name: "2.3 May 2021",
                           link:
@@ -527,8 +534,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Financial Management",
                     monthYear: [
-                      MonthYear(name: "2.4 Apr 2022", link: ""),
-                      MonthYear(name: "2.4 Nov 2021", link: ""),
+                      MonthYear(name: "2.4 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
+                      MonthYear(name: "2.4 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.4_financial_management.pdf"),
+                      MonthYear(name: "2.4 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.4_financial_management.pdf"),
                       MonthYear(
                           name: "2.4 May 2021",
                           link:
@@ -597,8 +605,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Public Sector Accounting & Finance",
                     monthYear: [
-                      MonthYear(name: "2.5 Apr 2022", link: ""),
-                      MonthYear(name: "2.5 Nov 2021", link: ""),
+                      MonthYear(name: "2.5 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
+                      MonthYear(name: "2.5 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.5_public_sector_accounting.pdf"),
+                      MonthYear(name: "2.5 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.5_public_sector_accounting.pdf"),
                       MonthYear(
                           name: "2.5 May 2021",
                           link:
@@ -667,8 +676,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Principles of Taxation",
                     monthYear: [
-                      MonthYear(name: "2.6 Apr 2022", link: ""),
-                      MonthYear(name: "2.6 Nov 2021", link: ""),
+                      MonthYear(name: "2.6 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
+                      MonthYear(name: "2.6 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.6_principles_of_taxation.pdf"),
+                      MonthYear(name: "2.6 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.6_principles_of_taxation.pdf"),
                       MonthYear(
                           name: "2.6 May 2021",
                           link:
@@ -715,8 +725,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Corporate Reporting",
                     monthYear: [
-                      MonthYear(name: "3.1 Apr 2022", link: ""),
-                      MonthYear(name: "3.1 Nov 2021", link: ""),
+                      MonthYear(name: "3.1 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.1_corporate_reporting.pdf"),
+                      MonthYear(name: "3.1 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.1_corporate_reporting.pdf"),
+                      MonthYear(name: "3.1 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.1_corporate_reporting.pdf"),
                       MonthYear(
                           name: "3.1 May 2021",
                           link:
@@ -785,8 +796,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Advanced Audit & Assurance",
                     monthYear: [
-                      MonthYear(name: "3.2 Apr 2022", link: ""),
-                      MonthYear(name: "3.2 Nov 2021", link: ""),
+                      MonthYear(name: "3.2 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.2_advanced_audit_assurance.pdf"),
+                      MonthYear(name: "3.2 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.2_advanced_audit_assurance.pdf"),
+                      MonthYear(name: "3.2 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(
                           name: "3.2 May 2021",
                           link:
@@ -855,8 +867,9 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Advanced Taxation",
                     monthYear: [
-                      MonthYear(name: "3.3 Apr 2022", link: ""),
-                      MonthYear(name: "3.3 Nov 2021", link: ""),
+                      MonthYear(name: "3.3 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.3_advanced_taxation.pdf"),
+                      MonthYear(name: "3.3 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.3_advanced_taxation.pdf"),
+                      MonthYear(name: "3.3 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.3_advanced_taxation.pdf"),
                       MonthYear(
                           name: "3.3 May 2021",
                           link:
@@ -874,35 +887,35 @@ class HomePage extends StatelessWidget {
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_3.3_advanced_taxation-2.pdf"),
                       MonthYear(
-                          name: "3.3 May 2019",
+                          name: "3.4 May 2019",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/may-2019_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(
-                          name: "3.3 Nov 2018",
+                          name: "3.4 Nov 2018",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/nov-2018_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(
-                          name: "3.3 May 2018",
+                          name: "3.4 May 2018",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/may-2018_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(
-                          name: "3.3 Nov 2017",
+                          name: "3.4 Nov 2017",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(
-                          name: "3.3 May 2017",
+                          name: "3.4 May 2017",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/may-2017_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(
-                          name: "3.3 Nov 2016",
+                          name: "3.4 Nov 2016",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/nov-2016_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(
-                          name: "3.3 May 2016",
+                          name: "3.4 May 2016",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/may-2016_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(
-                          name: "3.3 Nov 2015",
+                          name: "3.4 Nov 2015",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_3.4_taxation_fiscal_policy-2.pdf"),
                     ],
@@ -925,22 +938,23 @@ class HomePage extends StatelessWidget {
                       homeYear: HomeYear(
                     name: "Strategic Case Study",
                     monthYear: [
-                      MonthYear(name: "1.3 Apr 2022", link: ""),
-                      MonthYear(name: "1.3 Nov 2021", link: ""),
+                      MonthYear(name: "3.4 Aug 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
+                      MonthYear(name: "3.4 Apr 2022", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.4_strategic_case_study.pdf"),
+                      MonthYear(name: "3.4 Nov 2021", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.4_strategic_case_study.pdf"),
                       MonthYear(
-                          name: "1.3 May 2021",
+                          name: "3.4 May 2021",
                           link:
                               "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.4_strategic_case_study.pdf"),
                       MonthYear(
-                          name: "1.3 Nov 2020",
+                          name: "3.4 Nov 2020",
                           link:
                               "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.4_strategic_case_study.pdf"),
                       MonthYear(
-                          name: "1.3 May 2020",
+                          name: "3.4 May 2020",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/10/may-2020_3.4_strategic_case_study.pdf"),
                       MonthYear(
-                          name: "1.3 Nov 2019",
+                          name: "3.4 Nov 2019",
                           link:
                               "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_3.4_strategic_case_study.pdf"),
                     ],

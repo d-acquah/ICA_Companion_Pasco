@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ica_companion_pasco">
    <application
-        android:label="ica_companion_pasco"
+        android:label="ICA Companion : Pasco"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -16,11 +16,11 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   int currentIndex = 0;
   final screens = [
     HomePage(),
-    // TrendPage(),
-    Container(),
+    TrendPage(),
+   // Container(child: Text("This feature is under development and not accessible at the moment"),),
     TopicsPage(),
-    // PremiumPage(),
-    Container()
+    const PremiumPage(),
+    
 
   ];
   @override
@@ -54,7 +54,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             // backgroundColor: Colors.blue,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.price_check),
+            icon: Icon(Icons.attach_money),
             label: 'Premium',
             // backgroundColor: Colors.blue,
           ),
