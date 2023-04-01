@@ -5,7 +5,7 @@ import 'package:ica_companion_pasco/pdf_viewer.dart';
 class YearListTile extends StatelessWidget {
   final MonthYear monthYear;
 
-  const YearListTile({Key key, this.monthYear}) : super(key: key);
+  const YearListTile({Key? key, required this.monthYear}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

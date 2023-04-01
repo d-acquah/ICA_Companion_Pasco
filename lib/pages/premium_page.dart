@@ -1,8 +1,8 @@
-// @dart=2.9
+
 import 'package:flutter/material.dart';
 
 class PremiumPage extends StatelessWidget {
-  const PremiumPage({Key key}) : super(key: key);
+  const PremiumPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -10,18 +10,13 @@ class PremiumPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
           'Premium',
           style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.w600, color: Colors.black),
-        ),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
-        ],
+              fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
+        ),  
         elevation: 0,
-        backgroundColor: Colors.white,
-        
+        backgroundColor: Colors.blue,
       ),
       body: SafeArea(
         child: ListView(
@@ -42,7 +37,7 @@ class PremiumPage extends StatelessWidget {
             const Card(
               child: ListTile(
                 title: Text(
-                  'Trend Feature(Not available)',
+                  'Trend Feature(Not Available)',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                 ),
                 subtitle: Text(
@@ -101,7 +96,7 @@ class PremiumPage extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 200,
+              height: 150,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -112,7 +107,6 @@ class PremiumPage extends StatelessWidget {
                         textStyle: const TextStyle(fontSize: 14)),
                     onPressed: () {},
                     child: const Text('Buy for GH₵7/Month')),
-                   //const Spacer(flex:1,),
                 OutlinedButton(
                     style: OutlinedButton.styleFrom(
                        foregroundColor: Colors.blue, minimumSize: const Size(50, 50),
@@ -121,7 +115,17 @@ class PremiumPage extends StatelessWidget {
                     onPressed: () {},
                     child: const Text('Buy for GH₵17/3Months')),
               ],
+              
             ),
+             const SizedBox(
+              height: 40,
+            ),Text(
+                "*Subscription will not be renewed automatically when it expires",
+                style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 14,
+                    color: Color(0xff333333)),
+              ),
           ],
         ),
       ),

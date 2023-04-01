@@ -40,8 +40,8 @@
 
 class HomeYear {
   HomeYear({
-    this.name,
-    this.monthYear,
+    required this.name,
+    required this.monthYear,
   });
 
   String name;
@@ -50,19 +50,20 @@ class HomeYear {
 
 class MonthYear {
   MonthYear({
-    this.name,
-    this.link,
+    required this.name,
+    required this.link,
+    this.title
   });
 
   String name;
   String link;
-  String title;
+  String? title;
 }
 
 class TopicsSubjects {
   TopicsSubjects({
-    this.name,
-    this.topics,
+    required this.name,
+    required this.topics,
   });
 
   String name;
@@ -71,8 +72,8 @@ class TopicsSubjects {
 
 class Topic {
   Topic({
-    this.name,
-    this.monthYear,
+    required this.name,
+    required this.monthYear,
   });
 
   String name;

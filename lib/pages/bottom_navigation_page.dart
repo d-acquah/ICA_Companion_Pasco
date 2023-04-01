@@ -1,4 +1,4 @@
-// @dart=2.9
+
 import 'package:flutter/material.dart';
 import 'package:ica_companion_pasco/home_page.dart';
 import 'package:ica_companion_pasco/pages/premium_page.dart';
@@ -6,7 +6,7 @@ import 'package:ica_companion_pasco/pages/topics_page.dart';
 import 'package:ica_companion_pasco/pages/trend_page.dart';
 
 class BottomNavigationPage extends StatefulWidget {
-  const BottomNavigationPage({Key key}) : super(key: key);
+  const BottomNavigationPage({Key? key}) : super(key: key);
 
   @override
   State<BottomNavigationPage> createState() => _BottomNavigationPageState();
@@ -19,7 +19,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
     TrendPage(),
    // Container(child: Text("This feature is under development and not accessible at the moment"),),
     TopicsPage(),
-    const PremiumPage(),
+    PremiumPage(),
     
 
   ];

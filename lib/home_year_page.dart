@@ -3,9 +3,8 @@ import 'package:ica_companion_pasco/models/pasco_model.dart';
 import 'package:ica_companion_pasco/widgets/year_list_tile.dart';
 
 class HomeYearPage extends StatelessWidget {
-  HomeYearPage({Key key, this.homeYear, this.monthYear, this.name})
+  HomeYearPage({Key? key, required this.homeYear, required this.monthYear, required this.name})
       : super(key: key);
-  final ScrollController _scrollController = ScrollController();
   final List<MonthYear> monthYear;
   final String name;
   final HomeYear homeYear;
@@ -14,31 +13,24 @@ class HomeYearPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: false,
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: Text(
+      appBar: AppBar(toolbarHeight:55,
+        centerTitle: true, automaticallyImplyLeading: false,
+          title: Text(
           homeYear.name,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
-              fontSize: 26, fontWeight: FontWeight.w600, color: Colors.black),
+              fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white, 
+                    ),
         ),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
-        ],
-        elevation: 0,
-        backgroundColor: Colors.white,
+       
+         elevation: 0,
+        backgroundColor: Colors.blue,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(90),
+          preferredSize: const Size.fromHeight(1),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-            child: TextField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  hintText: 'Search by year',
-                  prefixIcon: const Icon(Icons.search)),
+            padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
             ),
-          ),
         ),
       ),
       body: SafeArea(

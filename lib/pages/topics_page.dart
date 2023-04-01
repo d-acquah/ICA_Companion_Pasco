@@ -3,7 +3,7 @@ import 'package:ica_companion_pasco/models/pasco_model.dart';
 import 'package:ica_companion_pasco/topic_subjects_page.dart';
 
 class TopicsPage extends StatelessWidget {
-  TopicsPage({Key key}) : super(key: key);
+  TopicsPage({Key? key}) : super(key: key);
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -12,31 +12,15 @@ class TopicsPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
-          'Categorisation By Topics',
+          'Categorisation By Topics', maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
-              fontSize: 26, fontWeight: FontWeight.w600, color: Colors.black),
+              fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
         ),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
-        ],
         elevation: 0,
-        backgroundColor: Colors.white,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(90),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-            child: TextField(
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  hintText: 'Search by course or subject name',
-                  prefixIcon: const Icon(Icons.search)),
-            ),
-          ),
+        backgroundColor: Colors.blue,
         ),
-      ),
       body: SafeArea(
         child: ListView(
           controller: _scrollController,
@@ -688,7 +672,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "May 2018 Q3 C", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018-_1.3_business-corporate-law-1.pdf"),
                       MonthYear(name: "May 2017 Q7 C & D", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2017_1.3_business-corporate-law-1.pdf"),             
                     ]),                 
-                    Topic(name: "Contract Law & The Law of Torts(Combined)", 
+                    Topic(name: "Contract Law & The Law of Torts (Combined)", 
                     monthYear: [
                       MonthYear(name: "Nov 2017 Q3 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017-_1.3_business-corporate-law-1.pdf"),                            
                     ]),       
@@ -961,7 +945,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Nov 2021 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.1_financial_reporting.pdf"),
                       MonthYear(name: "May 2020 Q2 A", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.1_financial_reporting.pdf"),
                     ]),
-                    Topic(name: "Branch Accounting & Partnership Accounts(Combined)", 
+                    Topic(name: "Branch Accounting & Partnership Accounts (Combined)", 
                     monthYear: [
                       MonthYear(name: "May 2016 Q5", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016_2.1_financial_reporting-2.pdf"),
                     ]),
@@ -1087,7 +1071,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "May 2021 Q5 C", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.1_financial_reporting.pdf"),
                       MonthYear(name: "May 2018 Q2 D", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018_2.1_financial_reporting-2.pdf"),
                     ]),
-                    Topic(name: "Hire Purchase & Leases(Combined)", 
+                    Topic(name: "Hire Purchase & Leases (Combined)", 
                     monthYear: [
                       MonthYear(name: "May 2017 Q5 A", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2017_2.1_financial_reporting-2.pdf"),
                     ]),
@@ -1379,7 +1363,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "May 2016 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016_2.3_audit_assurance-2.pdf"),
                       MonthYear(name: "Nov 2015 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_2.3_audit_assurance-2.pdf"),         
                     ]), 
-                    Topic(name: "Internal Audit & Reporting(Combined)", 
+                    Topic(name: "Internal Audit & Reporting (Combined)", 
                     monthYear: [
                       MonthYear(name: "Nov 2015 Q2 C", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_2.3_audit_assurance-2.pdf"),            
                     ]),
@@ -1450,7 +1434,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Apr 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2015 Q1 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_2.3_audit_assurance-2.pdf"),            
                     ]),
-                      Topic(name: "The Audit of Specific Items : Inventory & Reporting(Combined)", 
+                      Topic(name: "The Audit of Specific Items : Inventory & Reporting (Combined)", 
                     monthYear: [
                       MonthYear(name: "Nov 2019 Q3", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_2.3_audit_assurance-2.pdf"),
                       MonthYear(name: "Nov 2015 Q5 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_2.3_audit_assurance-2.pdf"),             
@@ -1461,7 +1445,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "May 2020 Q3 B", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.3_audit_assurance.pdf"),
                       MonthYear(name: "May 2016 Q5 C", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016_2.3_audit_assurance-2.pdf"),             
                     ]),
-                    Topic(name: "The Audit of Specific Items : Non-Current Asset & Reporting(Combined)", 
+                    Topic(name: "The Audit of Specific Items : Non-Current Asset & Reporting (Combined)", 
                     monthYear: [
                       MonthYear(name: "Nov 2017 Q5 A(II)", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_2.3_audit_assurance-2.pdf"),
                       MonthYear(name: "Nov 2015 Q5 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_2.3_audit_assurance-2.pdf"),             
@@ -1476,7 +1460,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Nov 2019 Q2 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_2.3_audit_assurance-2.pdf"),  
                       MonthYear(name: "Nov 2017 Q2 B(II)", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_2.3_audit_assurance-2.pdf"),            
                     ]),
-                    Topic(name: "The Audit of Specific Items : Contigent Liabilities & Reporting(Combined)", 
+                    Topic(name: "The Audit of Specific Items : Contigent Liabilities & Reporting (Combined)", 
                     monthYear: [
                       MonthYear(name: "Nov 2017 Q5 A(I)", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_2.3_audit_assurance-2.pdf"),
                       MonthYear(name: "Nov 2015 Q5 C", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_2.3_audit_assurance-2.pdf"),             
@@ -2033,7 +2017,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "May 2020 Q2 E", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Nov 2019 Q2 C", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_2.6_principles_of_taxation-2.pdf"),
                       ]),
-                      Topic(name: "Withholding Tax & VAT(Combined)", 
+                      Topic(name: "Withholding Tax & VAT (Combined)", 
                     monthYear: [
                       MonthYear(name: "May 2021 Q5 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Nov 2020 Q5 B & C", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_2.6_principles_of_taxation.pdf"),
@@ -2131,7 +2115,7 @@ class TopicsPage extends StatelessWidget {
                   return TopicsSubjectsPage(
                       topicsSubjects: TopicsSubjects(
                     name: "Corporate Reporting",
-                    topics: [Topic(name: "Group Financial Statements(Conso)", 
+                    topics: [Topic(name: "Group Financial Statements (Conso)", 
                     monthYear: [
                       MonthYear(name: "Nov 2021 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q1", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.1_corporate_reporting.pdf"),
@@ -2338,19 +2322,19 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "May 2019 Q2 D", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2019_3.1_corporate-reporting-2.pdf"),
                       MonthYear(name: "May 2018 Q2 D", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018_3.1_corporate-reporting-2.pdf"),
                       ]),
-                       Topic(name: "IFRS 5, IAS 37 & IAS 10(Combined)", 
+                       Topic(name: "IFRS 5, IAS 37 & IAS 10 (Combined)", 
                     monthYear: [
                       MonthYear(name: "Nov 2018 Q2 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2018_3.1_corporate_reporting-2.pdf"),
                       ]),
-                     Topic(name: "IFRS 5 & IAS 36(Combined)", 
+                     Topic(name: "IFRS 5 & IAS 36 (Combined)", 
                     monthYear: [
                       MonthYear(name: "May 2021 Q2 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.1_corporate-reporting.pdf"),
                       ]),
-                      Topic(name: "IAS 36 : Impairment of assets & IAS 12 : Income Taxes(Combined)", 
+                      Topic(name: "IAS 36 : Impairment of assets & IAS 12 : Income Taxes (Combined)", 
                     monthYear: [
                       MonthYear(name: "May 2021 Q2 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.1_corporate-reporting.pdf"),
                       ]),
-                      Topic(name: "Financial Instruments & IAS : 20 Government Grants(Combined)", 
+                      Topic(name: "Financial Instruments & IAS : 20 Government Grants (Combined)", 
                     monthYear: [
                       MonthYear(name: "Nov 2018 Q2 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2018_3.1_corporate_reporting-2.pdf"),
                       ]),
@@ -2929,7 +2913,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Nov 2021 Q1", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "May 2020 Q1", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_3.4_strategic_case_study.pdf"),
                       ]),
-                       Topic(name: "Competitive Forces & Financial Management(Combined)", 
+                       Topic(name: "Competitive Forces & Financial Management (Combined)", 
                     monthYear: [
                       MonthYear(name: "May 2020 Q3", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_3.4_strategic_case_study.pdf"),
                       ]),

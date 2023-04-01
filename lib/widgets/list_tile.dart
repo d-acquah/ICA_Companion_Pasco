@@ -5,7 +5,7 @@ import 'package:ica_companion_pasco/topics_years_page.dart';
 class TopicListTile extends StatelessWidget {
   final Topic topic;
 
-  const TopicListTile({Key key, this.topic}) : super(key: key);
+  const TopicListTile({Key? key, required this.topic}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
