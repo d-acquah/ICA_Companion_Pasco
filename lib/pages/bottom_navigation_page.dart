@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:ica_companion_pasco/home_page.dart';
-import 'package:ica_companion_pasco/pages/premium_page.dart';
+//import 'package:ica_companion_pasco/pages/premium_page.dart';
 import 'package:ica_companion_pasco/pages/topics_page.dart';
 import 'package:ica_companion_pasco/pages/trend_page.dart';
 
@@ -17,9 +17,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   final screens = [
     HomePage(),
     TrendPage(),
-   // Container(child: Text("This feature is under development and not accessible at the moment"),),
     TopicsPage(),
-    PremiumPage(),
+   //PremiumPage(),
     
 
   ];
@@ -53,11 +52,11 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             label: 'Topics',
             // backgroundColor: Colors.blue,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.attach_money),
-            label: 'Premium',
+          //BottomNavigationBarItem(
+           // icon: Icon(Icons.attach_money),
+          //  label: 'Premium',
             // backgroundColor: Colors.blue,
-          ),
+         // ),
         ],
       ),
     );

@@ -22,7 +22,7 @@ class _PDFViewerState extends State<PDFViewer> {
         SnackBar(
            backgroundColor: Colors.blue,
           content: Text('Make sure you have internet connection'),
-          duration: Duration(seconds: 4),
+          duration: Duration(seconds: 3),
         ),
       );
     });
