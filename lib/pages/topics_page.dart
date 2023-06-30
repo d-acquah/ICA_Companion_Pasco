@@ -1,14 +1,96 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
 import 'package:ica_companion_pasco/topic_subjects_page.dart';
 
-class TopicsPage extends StatelessWidget {
+class TopicsPage extends StatefulWidget {
   TopicsPage({Key? key}) : super(key: key);
-  final ScrollController _scrollController = ScrollController();
+
+  @override
+  State<TopicsPage> createState() => _TopicsPageState();
+}
+
+class _TopicsPageState extends State<TopicsPage> {
+  //final ScrollController _scrollController = ScrollController();
+final BannerAd myBanner = BannerAd(
+      size: AdSize.banner,
+      adUnitId: Platform.isAndroid
+          ? "ca-app-pub-2530239307985191/4923044950"
+          : "ca-app-pub-3940256099942544/2934735716",
+     listener: BannerAdListener(
+        onAdLoaded: (Ad ad) {
+          print('$BannerAd loaded.');
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          ad.dispose();
+          print('$BannerAd failedToLoad: $error');
+        },),
+      
+      request: AdRequest());
+
+  @override
+  void initState() {
+    super.initState();
+    myBanner.load();
+  }
+  InterstitialAd? interstitialAd;
+
+  bool _canPop = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async { {
+        if (_canPop) {
+          return true;
+        } else {
+          await Future.delayed(Duration(milliseconds: 500));
+          setState(() {
+            _canPop = true;
+          });
+         ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.blue,
+            content: Text('Press back button again to exit'),
+            duration: Duration(seconds: 3),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );  
+        }
+      }
+        await InterstitialAd.load(
+            adUnitId: Platform.isAndroid
+                ? "ca-app-pub-2530239307985191/5038971352"
+                : "ca-app-pub-3940256099942544/4411468910",
+            request: const AdRequest(),
+            adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+              interstitialAd = ad;
+              ad.show();
+               interstitialAd?.fullScreenContentCallback =
+                          FullScreenContentCallback(
+                              onAdDismissedFullScreenContent: (ad) {
+                        interstitialAd?.dispose();
+                        ad.dispose();
+                         SystemNavigator.pop();
+                      }, onAdFailedToShowFullScreenContent: (ad, err) {
+                        ad.dispose();
+                        interstitialAd?.dispose();
+                      });
+            }, onAdFailedToLoad: (err) {
+              debugPrint(err.message);
+
+              
+              // ignore: dead_code
+              // Navigator.push(context,MaterialPageRoute(builder: (context){
+              //                return NextPage();
+            }));
+            return false;  
+            
+      },
+      child: Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
@@ -21,10 +103,10 @@ class TopicsPage extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.blue,
         ),
-      body: SafeArea(
-        child: ListView(
-          controller: _scrollController,
+      body: Stack(
           children: [
+            ListView(
+            children: [
             const SizedBox(
               height: 15,
             ),
@@ -89,6 +171,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Tangible Non-Current Asset",
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "May 2021 Q1 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
@@ -113,7 +196,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Nov 2015 Q2 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015-_1.1_financial_accounting-2.pdf"),
                     ]),
                     Topic(name: "Statement of Cash Flows", monthYear: [
-                      MonthYear(name: "AUG 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
+                      MonthYear(name: "Aug 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2020 Q5 C", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2018 Q2", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2018-_1.1_financial_accounting-2.pdf"),
                       MonthYear(name: "May 2018 Q4", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018-_1.1_financial_accounting-2.pdf"),
@@ -124,8 +207,9 @@ class TopicsPage extends StatelessWidget {
                     Topic(
                         name: "Interpretation of Financial Statements",
                         monthYear: [
+                          MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Dec 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
-                          MonthYear(name: "AUG 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
+                          MonthYear(name: "Aug 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Apr 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Nov 2021 Q5", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "May 2021 Q5 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
@@ -144,6 +228,7 @@ class TopicsPage extends StatelessWidget {
                     Topic(
                         name: "Sources, Records & Books of Prime Entry",
                         monthYear: [
+                          MonthYear(name: "Mar 2023 Q1 D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "May 2021 Q3 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Nov 2015 Q4 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015-_1.1_financial_accounting-2.pdf"),
                         ]),
@@ -152,8 +237,9 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Partnerships", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
-                      MonthYear(name: "AUG 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
+                      MonthYear(name: "Aug 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "May 2021 Q2 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
@@ -167,6 +253,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Nov 2015 Q4 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015-_1.1_financial_accounting-2.pdf"),
                     ]),
                     Topic(name: "IAS 2 : Inventory", monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "May 2019 Q6 A & B", link: "https://mypascoblog.files.wordpress.com/2020/08/may_2019_1.1_financial_accounting-2.pdf"),
                       MonthYear(name: "Nov 2018 Q4 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2018-_1.1_financial_accounting-2.pdf"),
                       MonthYear(name: "Nov 2017 Q2", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_1.1_financial_accounting-2.pdf"),
@@ -175,13 +262,14 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Accruals & Prepayments", 
                     monthYear: [
-                      MonthYear(name: "AUG 2022 Q1 B & C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
+                      MonthYear(name: "Aug 2022 Q1 B & C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "May 2021 Q2 A(I), (II) & (III)", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2020 Q1 B", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "May 2019 Q3 C(I) & (II)", link: "https://mypascoblog.files.wordpress.com/2020/08/may_2019_1.1_financial_accounting-2.pdf"),
                     ]),
                     Topic(name: "Irrecoverable Debts & Allowance", monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 A(II)", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "May 2021 Q2 A(IV)", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
@@ -189,6 +277,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "May 2019 Q3 C(III)", link: "https://mypascoblog.files.wordpress.com/2020/08/may_2019_1.1_financial_accounting-2.pdf"),
                     ]),
                     Topic(name: "Control Accounts", monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 A(I)", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q3", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.1_financial_accounting.pdf"),
@@ -217,7 +306,8 @@ class TopicsPage extends StatelessWidget {
                         name:
                             "The Qualitative Characteristics of Financial Information",
                         monthYear: [
-                          MonthYear(name: "AUG 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
+                          MonthYear(name: "Mar 2023 Q1 A & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
+                          MonthYear(name: "Aug 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Nov 2020 Q1 A", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Nov 2019 Q1 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019-_1.1_financial_accounting-2.pdf"),
                           MonthYear(name: "May 2019 Q5 D & E", link: "https://mypascoblog.files.wordpress.com/2020/08/may_2019_1.1_financial_accounting-2.pdf"),
@@ -253,8 +343,9 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Nov 2015 Q6", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015-_1.1_financial_accounting-2.pdf"),
                     ]),
                     Topic(name: "Correction of Errors", monthYear: [
+                      MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
-                      MonthYear(name: "AUG 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
+                      MonthYear(name: "Aug 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2020 Q3 A", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "May 2020 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2020_1.1_financial_accounting.pdf"),
@@ -269,6 +360,7 @@ class TopicsPage extends StatelessWidget {
                         name:
                             "Preparation of Financial Statements for Companies",
                         monthYear: [
+                          MonthYear(name: "Mar 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Dec 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "May 2021 Q4", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Nov 2019 Q4", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019-_1.1_financial_accounting-2.pdf"),
@@ -321,6 +413,7 @@ class TopicsPage extends StatelessWidget {
                     name: "Business Management & Information System",
                     topics: [Topic(name: "The Information Systems & Information Technology", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Nov 2021 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.2_business_management_info_systems.pdf"),
@@ -346,6 +439,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Organisation Strategy & Planning", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Nov 2021 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.2_business_management_info_systems.pdf"),
@@ -363,6 +457,7 @@ class TopicsPage extends StatelessWidget {
                     ]),                   
                     Topic(name: "Human Resource Management", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
@@ -377,8 +472,10 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Nov 2016 Q4 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2016-_1.2_business_management_info_systems-3.pdf"),
                       MonthYear(name: "May 2016 Q4", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016-_1.2_business_management_info_systems-3.pdf"),
                       MonthYear(name: "Nov 2015 Q3", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015-_1.2_business_management_info_systems-3.pdf"),                     
-                    ]),Topic(name: "Marketing Management", 
+                    ]),
+                    Topic(name: "Marketing Management", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
@@ -423,6 +520,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Organisation Structure & Functions", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
@@ -439,6 +537,7 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "May 2016 Q1", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016-_1.2_business_management_info_systems-3.pdf"),                    
                     ]),Topic(name: "Organisational Culture & Management Environment", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
@@ -461,6 +560,8 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Organisations & The Business Environment", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
+                      MonthYear(name: "Mar 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Nov 2021 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.2_business_management_info_systems.pdf"),
@@ -485,6 +586,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Motivation & Behaviour", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "May 2021 Q5 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Nov 2020 Q3 B", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020-_1.2_business_management_info_systems.pdf"),
@@ -512,6 +614,7 @@ class TopicsPage extends StatelessWidget {
                     name: "Business & Corporate Law",
                     topics: [Topic(name: "The Laws of Ghana", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2020 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2019 Q1 A, B & C", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019-_1.3_business-corporate-law-1.pdf"),
@@ -536,6 +639,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Employment Law", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Apr 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2021 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.3_business-corporate-law.pdf"),
@@ -556,6 +660,8 @@ class TopicsPage extends StatelessWidget {
                     ]),         
                     Topic(name: "Company Law", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
+                      MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
@@ -601,6 +707,7 @@ class TopicsPage extends StatelessWidget {
                     ]),             
                     Topic(name: "Partnership Law", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Apr 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2021 Q5 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2020 Q2 A", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020-_1.3_business-corporate-law.pdf"),
@@ -615,6 +722,7 @@ class TopicsPage extends StatelessWidget {
                     ]),       
                     Topic(name: "Court Structure", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2021 Q1 A & B(II)", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2021 Q1 C", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2020 Q1 A", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020-_1.3_business-corporate-law.pdf"),
@@ -626,6 +734,7 @@ class TopicsPage extends StatelessWidget {
                     ]),  
                     Topic(name: "Human Rights", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 C & D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2021 Q1 B(I)", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2021 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.3_business-corporate-law.pdf"),
@@ -655,6 +764,8 @@ class TopicsPage extends StatelessWidget {
                     ]),  
                     Topic(name: "Contract Law", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
+                      MonthYear(name: "Mar 2023 Q2 B & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A(III)", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Apr 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2021 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.3_business-corporate-law.pdf"),
@@ -684,6 +795,7 @@ class TopicsPage extends StatelessWidget {
                     ]),  
                     Topic(name: "The Law of Torts", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A(I)", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2020 Q4 A", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2020 Q4", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020-_1.3_business-corporate-law.pdf"),
@@ -760,6 +872,8 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Budgeting", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
+                      MonthYear(name: "Mar 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 D", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
@@ -773,6 +887,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Scope of Management Accounting", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "May 2021 Q3 B & C", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.4_introduction_to_management_accounting.pdf"),
@@ -781,6 +896,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Standard Costing & Variance Analysis", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_1.4_introduction_to_management_accounting.pdf"),
@@ -797,6 +913,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Accounting for Inventory & Labour", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_1.4_introduction_to_management_accounting.pdf"),
@@ -815,6 +932,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Marginal & Absorption Costing", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "May 2021 Q1", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.4_introduction_to_management_accounting.pdf"),
@@ -834,6 +952,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Costs & Cost Behaviour", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_1.4_introduction_to_management_accounting.pdf"),
@@ -842,6 +961,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Cost Segregation & Estimation", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021_1.4_introduction_to_management_accounting.pdf"),
@@ -878,6 +998,7 @@ class TopicsPage extends StatelessWidget {
                     topics: [
                     Topic(name: "Conceptual & Regulatory Framework", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.1_financial_reporting.pdf"),
                       MonthYear(name: "May 2021 Q5 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.1_financial_reporting.pdf"),
@@ -910,6 +1031,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Consolidated Financial Statements", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
@@ -937,6 +1059,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "IAS 16 : Property, Plant & Equipment", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A(I)", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2019 Q2 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_2.1_financial_reporting-2.pdf"),
                       MonthYear(name: "May 2018 Q5 C", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018_2.1_financial_reporting-2.pdf"),
@@ -955,6 +1078,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "IFRS 5 : Non-Current Assets Held for Sale & Discountinued Operations", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "May 2021 Q2 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.1_financial_reporting.pdf"),
                       MonthYear(name: "May 2020 Q2 B", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.1_financial_reporting.pdf"),
@@ -1005,9 +1129,14 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "IFRS 15 : Revenue From Contracts With Customers", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.1_financial_reporting.pdf"),
                       MonthYear(name: "May 2020 Q2 A", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.1_financial_reporting.pdf"),
                     ]),
+                    Topic(name: "IFRS 13 : Fair Value Measurement", 
+                    monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
+                      ]),
                     Topic(name: "Branch Accounting & Partnership Accounts (Combined)", 
                     monthYear: [
                       MonthYear(name: "May 2016 Q5", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016_2.1_financial_reporting-2.pdf"),
@@ -1028,6 +1157,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "IAS 12 : Income Taxes", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2019 Q2 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_2.1_financial_reporting-2.pdf"),
                       MonthYear(name: "May 2019 Q2 C", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2019_2.1_financial_reporting-2.pdf"),
@@ -1051,6 +1181,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                      Topic(name: "Preparation of Financial Statements(Published Accounts)", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q3", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.1_financial_reporting.pdf"),
@@ -1067,6 +1198,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Interpretation of Financial Statements", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
@@ -1185,6 +1317,8 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Standard Costing & Variance Analysis", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
+                      MonthYear(name: "Mar 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.2_management_accounting.pdf"),
@@ -1210,6 +1344,8 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Budgetary Control/Cash & Master Budgets", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
+                      MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.2_management_accounting.pdf"),
@@ -1283,6 +1419,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Divisional Performance", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "May 2021 Q1 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.2_management_accounting.pdf"),
                       MonthYear(name: "May 2019 Q1 B", link: "https://mypascoblog.files.wordpress.com/2021/04/may-2019_2.2_management_accounting.pdf"),
@@ -1318,6 +1455,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Decision-Making Techniques", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "May 2021 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.2_management_accounting.pdf"),
                       MonthYear(name: "May 2020 Q5", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.2_management_accounting.pdf"),
                       MonthYear(name: "May 2020 Q4 C", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.2_management_accounting.pdf"),
@@ -1351,6 +1489,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Models of Evaluation", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A, B & C(I)", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.2_management_accounting.pdf"),
@@ -1376,6 +1515,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Discounted Cash Flow", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.2_management_accounting.pdf"),
@@ -1448,6 +1588,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Audit Review & Finalisation", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.3_audit_assurance.pdf"),
@@ -1467,6 +1608,8 @@ class TopicsPage extends StatelessWidget {
                     ]), 
                     Topic(name: "Risk Assessment", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
+                      MonthYear(name: "Mar 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2021 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2021 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.3_audit_assurance.pdf"),
@@ -1507,6 +1650,7 @@ class TopicsPage extends StatelessWidget {
                     ]), 
                     Topic(name: "Internal Control", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q5 D & E", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "May 2021 Q1 B(II)", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.3_audit_assurance.pdf"),
                       MonthYear(name: "May 2019 Q2 B", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2019_2.3_audit_assurance-2.pdf"),
@@ -1516,6 +1660,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Professional Ethics", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q2 B & C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A & C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
@@ -1557,6 +1702,10 @@ class TopicsPage extends StatelessWidget {
                     monthYear: [
                       MonthYear(name: "Nov 2017 Q5 A(II)", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_2.3_audit_assurance-2.pdf"),
                       MonthYear(name: "Nov 2015 Q5 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_2.3_audit_assurance-2.pdf"),             
+                    ]),
+                    Topic(name: "The Audit of Specific Items : Non-Current Asset, receivables & Inventory (Combined)", 
+                    monthYear: [
+                      MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),             
                     ]),
                     Topic(name: "The Audit of Specific Items : Liabilities, Capital & Directors' Emoluments", 
                     monthYear: [
@@ -1623,6 +1772,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                      Topic(name: "Reporting", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q5 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2021 Q4 A(II)", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.3_audit_assurance.pdf"),
@@ -1644,6 +1794,7 @@ class TopicsPage extends StatelessWidget {
                     ]),
                     Topic(name: "Audit Planning & Documentation", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 A & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q1 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2021 Q1 C", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2020 Q2 B", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_2.3_audit_assurance.pdf"),
@@ -1659,6 +1810,7 @@ class TopicsPage extends StatelessWidget {
                       ]), 
                       Topic(name: "Corporate Governance", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2021 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.3_audit_assurance.pdf"),
@@ -1710,6 +1862,7 @@ class TopicsPage extends StatelessWidget {
                     name: "Financial Management",
                     topics: [Topic(name: "Introduction to Financial Management", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Apr 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.4_financial_management.pdf"),
@@ -1728,11 +1881,13 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Treasury Management", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Nov 2020 Q3 C", link: "https://mypascoblog.files.wordpress.com/2021/03/nov_2020_2.4_financial_management.pdf"),
                       MonthYear(name: "May 2020 Q4 C & D", link: "https://mypascoblog.files.wordpress.com/2020/10/may_2020_2.4_financial_management.pdf"), 
                       ]),
                       Topic(name: "Mergers & Acquisition", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Apr 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Nov 2021 Q2", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.4_financial_management.pdf"),
@@ -1740,6 +1895,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Simple Interest & Compound Interest", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Apr 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.4_financial_management.pdf"),
@@ -1751,6 +1907,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Financial Markets", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Nov 2021 Q4 C", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.4_financial_management.pdf"),
                       MonthYear(name: "May 2019 Q1 B", link: "https://mypascoblog.files.wordpress.com/2020/08/may_2019_2.4_financial_management-2.pdf"),
@@ -1762,6 +1919,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Working Capital,Inventory,Receivables & Payables and Cash Management", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 A(I)", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Apr 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Nov 2021 Q5 A, B & C", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.4_financial_management.pdf"),
@@ -1806,6 +1964,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Investment Appraisals", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Apr 2022 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.4_financial_management.pdf"),
@@ -1854,6 +2013,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Foreign Currency Risk", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Dec 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q5 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q3 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
@@ -1877,6 +2037,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Business Valuation", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Dec 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Apr 2022 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "May 2021 Q2", link: "https://mypascoblog.files.wordpress.com/2021/07/may_2021_2.4_financial_management.pdf"),
@@ -1958,6 +2119,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Preparation & Presentation of Financial Statements for Local Government", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Nov 2020 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "May 2020 Q2", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Nov 2017 Q4", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_2.5_public_sector_accounting-2.pdf"), 
@@ -1969,6 +2131,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Public Sector Fiscal Planning & Budgeting", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.5_public_sector_accounting.pdf"),
@@ -2016,6 +2179,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Public Procurement", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.5_public_sector_accounting.pdf"),
@@ -2038,6 +2202,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "The Context of Public Financial Management in Ghana", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "May 2021 Q5 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.5_public_sector_accounting.pdf"),
@@ -2066,6 +2231,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Public Sector Financial Initiatives", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 B & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q4 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.5_public_sector_accounting.pdf"),
@@ -2085,6 +2251,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Public Expenditure & Financial Accountability Framework", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.5_public_sector_accounting.pdf"),
@@ -2096,6 +2263,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Financial Statements Discussion & Analysis", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.5_public_sector_accounting.pdf"),
@@ -2107,6 +2275,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Accounting Policies for Cash & Accruals Based Accounting System", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q1 A(II)", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.5_public_sector_accounting.pdf"),
@@ -2182,6 +2351,8 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Tax Administration in Ghana", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
+                      MonthYear(name: "Mar 2023 Q1 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q1 C & D", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q1 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q1 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.6_principles_of_taxation.pdf"),
@@ -2193,6 +2364,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Value Added Tax", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 A, B & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.6_principles_of_taxation.pdf"),
@@ -2204,6 +2376,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Withholding Tax", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.6_principles_of_taxation.pdf"),
@@ -2223,6 +2396,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Employment Income", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.6_principles_of_taxation.pdf"),
@@ -2234,6 +2408,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Business Income - Corporate Tax", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
@@ -2249,6 +2424,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Gains on Realisation of Assets & Gift Tax", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 C & D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q5 C & D", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q5 C & D", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q5 B & C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.6_principles_of_taxation.pdf"),
@@ -2261,6 +2437,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Social Security & Pensions", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Nov 2021 Q2 E", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.6_principles_of_taxation.pdf"),
@@ -2271,6 +2448,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Ghana Tax System", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "May 2020 Q1 A", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.6_principles_of_taxation.pdf"),
@@ -2322,6 +2500,7 @@ class TopicsPage extends StatelessWidget {
                     name: "Corporate Reporting",
                     topics: [Topic(name: "Group Financial Statements (Conso)", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.1_corporate_reporting.pdf"),
@@ -2344,7 +2523,11 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "May 2016 Q1 A", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016_3.1_corporate-reporting-2.pdf"),
                       MonthYear(name: "Nov 2015 Q1", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_3.1_corporate_reporting-2.pdf"),
                       ]),
-                       Topic(name: "IAS 7 : Cash Flow Statement", 
+                      Topic(name: "IFRS 10 : Consolidation Financial Statements", 
+                    monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
+                      ]),
+                      Topic(name: "IAS 7 : Cash Flow Statement", 
                     monthYear: [
                       MonthYear(name: "Nov 2021 Q5", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.1_corporate_reporting.pdf"),
                       ]),
@@ -2374,8 +2557,13 @@ class TopicsPage extends StatelessWidget {
                     monthYear: [
                       MonthYear(name: "Aug 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.1_corporate_reporting.pdf"),
                       ]),
+                      Topic(name: "IAS 36 : Impairment of Assets & IFRS 13 : Fair Value Measurement", 
+                    monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
+                      ]),
                       Topic(name: "Financial Instruments", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 A & B(I)", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Nov 2020 Q3 B", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Nov 2019 Q3 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_3.1_corporate_reporting-2.pdf"),
@@ -2401,6 +2589,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Interpretation of Financial Statements", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "May 2021 Q5", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.1_corporate-reporting.pdf"),
@@ -2418,6 +2607,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Professional & Ethical Duty of the Accountant", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q3 C", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.1_corporate_reporting.pdf"),
@@ -2499,6 +2689,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Capital Reduction Schemes", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "May 2021 Q4 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.1_corporate-reporting.pdf"),
                       MonthYear(name: "May 2020 Q4", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_3.1_corporate-reporting.pdf"),
                       MonthYear(name: "May 2019 Q3", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2019_3.1_corporate-reporting-2.pdf"),
@@ -2514,8 +2705,13 @@ class TopicsPage extends StatelessWidget {
                     monthYear: [
                       MonthYear(name: "May 2017 Q2 B", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2017_3.1_corporate_reporting-2.pdf"),
                       ]),
+                      Topic(name: "IAS 2 : Inventory, IAS 12 : Income Taxes & IAS 21 : The Effects of Changes in Foreign Exchange Rates", 
+                    monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
+                      ]),
                        Topic(name: "IAS 12 : Income Taxes", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 B(II)", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "May 2018 Q2 E", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018_3.1_corporate-reporting-2.pdf"),
                       MonthYear(name: "May 2017 Q2 C", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2017_3.1_corporate_reporting-2.pdf"),
                       ]),
@@ -2609,6 +2805,8 @@ class TopicsPage extends StatelessWidget {
                     name: "Advanced Audit & Assurance",
                     topics: [Topic(name: "Reporting", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
+                      MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2021 Q3 A(III)", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.2_advanced_audit_assurance.pdf"),
@@ -2654,6 +2852,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Internal Audit", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "May 2019 Q4 B", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2019_3.2_advanced_audit_assurance-2.pdf"),
                       MonthYear(name: "Nov 2018 Q4", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2018_3.2_advanced_audit_assurance-2.pdf"),
                       MonthYear(name: "May 2018 Q4 B", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018_3.2_advanced_audit_assurance-2.pdf"), 
@@ -2669,6 +2868,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Government External Audit & Public Accountability", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2020 Q4 A", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.2_advanced_audit_assurance.pdf"),
@@ -2731,6 +2931,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Rules of Professional Conduct", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "May 2021 Q1 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2020 Q1 A(I)", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.2_advanced_audit_assurance.pdf"),
@@ -2797,6 +2998,8 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Evidence", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
+                      MonthYear(name: "Mar 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.2_advanced_audit_assurance.pdf"),
@@ -2845,6 +3048,9 @@ class TopicsPage extends StatelessWidget {
                     name: "Advanced Taxation",
                     topics: [Topic(name: "Business Income", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
+                      MonthYear(name: "Mar 2023 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
+                      MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A(I),(II),(IV) & C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.3_advanced_taxation.pdf"),
@@ -2910,6 +3116,7 @@ class TopicsPage extends StatelessWidget {
                       ]), 
                       Topic(name: "Tax Administration", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 B & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q1 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.3_advanced_taxation.pdf"),
@@ -2945,8 +3152,15 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Nov 2016 Q2 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2016_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(name: "Nov 2015 Q3 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_3.4_taxation_fiscal_policy-2.pdf"),
                       ]),
+                      Topic(name: "Taxation of Trust", 
+                    monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
+                      ]),
                       Topic(name: "Tax Planning", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
+                      MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
+                      MonthYear(name: "Mar 2023 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A(III) & B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q3 B & C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.3_advanced_taxation.pdf"),
@@ -2977,6 +3191,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Permanent Estabishments", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 A & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q1 A & B(II)", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Nov 2021 Q2 D", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Nov 2021 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.3_advanced_taxation.pdf"),
@@ -3046,6 +3261,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Minerals & Mining", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Nov 2021 Q4", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "May 2021 Q4", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.3_advanced_taxation.pdf"),
@@ -3062,6 +3278,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "International Taxation", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 E & F", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q1 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "May 2021 Q2 D", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.3_advanced_taxation.pdf"),
@@ -3090,6 +3307,7 @@ class TopicsPage extends StatelessWidget {
                       ]),
                        Topic(name: "Free zone", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.3_advanced_taxation.pdf"),
                       ]),
                       Topic(name: "Investment Promotion", 
@@ -3131,6 +3349,8 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Internal Analysis", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
+                      MonthYear(name: "Mar 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Aug 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
                       ]),
                       Topic(name: "External Environmental Analysis & Internal Analysis", 
@@ -3152,6 +3372,8 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Strategy Implementation", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
+                      MonthYear(name: "Mar 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Aug 2022 Q6", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
@@ -3168,6 +3390,7 @@ class TopicsPage extends StatelessWidget {
                        ]),
                        Topic(name: "Methods of Development",  
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q6 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Aug 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
@@ -3182,6 +3405,8 @@ class TopicsPage extends StatelessWidget {
                       ]),
                       Topic(name: "Corporate Governance", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q8", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
+                      MonthYear(name: "Mar 2023 Q7", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q7", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Aug 2022 Q8 (II)", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Aug 2022 Q7", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
@@ -3192,8 +3417,9 @@ class TopicsPage extends StatelessWidget {
                       MonthYear(name: "Nov 2020 Q4 B", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Nov 2019 Q2 C", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_3.4_strategic_case_study.pdf"),
                        ]),
-                        Topic(name: "Ethics", 
+                      Topic(name: "Ethics", 
                     monthYear: [
+                      MonthYear(name: "Mar 2023 Q2 D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q6 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Aug 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Nov 2020 Q7(I)", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.4_strategic_case_study.pdf"),
@@ -3230,6 +3456,10 @@ class TopicsPage extends StatelessWidget {
                     monthYear: [
                       MonthYear(name: "Aug 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Nov 2020 Q8", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.4_strategic_case_study.pdf"),
+                      ]),
+                      Topic(name: "Sources of Finance", 
+                    monthYear: [
+                      MonthYear(name: "Mar 2023 Q6 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       ]),
                       Topic(name: "Sources of Finance & Capital Structure", 
                     monthYear: [
@@ -3270,9 +3500,23 @@ class TopicsPage extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
               ),
             ),
+            const Divider(
+                indent: 0,
+                thickness: 2,
+              ),
+              ListTile()
           ],
         ),
+         Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 50,
+                child: AdWidget(ad: myBanner),
+              )
+        ),
+          ],
       ),
+    ),
     );
   }
 }

@@ -1,5 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ica_companion_pasco">
+<queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
    <application
         android:label="ICA Companion : Pasco"
         android:name="${applicationName}"
@@ -32,7 +39,7 @@
             android:value="2" />
         <meta-data
   android:name="com.google.android.gms.ads.APPLICATION_ID"
-  android:value="ca-app-pub-2530239307985191~9231183729"/>
+  android:value="ca-app-pub-2530239307985191~6560631110"/>
     </application>
   <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

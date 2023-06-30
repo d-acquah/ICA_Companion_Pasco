@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -20,61 +20,80 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ScrollController _scrollController = ScrollController();
+  // final ScrollController _scrollController = ScrollController();
+  final BannerAd myBanner = BannerAd(
+      size: AdSize.banner,
+      adUnitId: Platform.isAndroid
+          ? "ca-app-pub-2530239307985191/4923044950"
+          : "ca-app-pub-3940256099942544/2934735716",
+      listener: BannerAdListener(
+        onAdLoaded: (Ad ad) {
+          print('$BannerAd loaded.');
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          ad.dispose();
+          print('$BannerAd failedToLoad: $error');
+        },),
+      
+      request: AdRequest());
+      
+
+  @override
+  void initState() {
+    super.initState();
+    myBanner.load();
+  }
 
   InterstitialAd? interstitialAd;
   bool _canPop = false;
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async { {
-        if (_canPop) {
-          return true;
-        } else {
-          await Future.delayed(Duration(seconds: 2));
-          setState(() {
-            _canPop = true;
-          });
-         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.blue,
-            content: Text('Press back button again to exit'),
-            duration: Duration(seconds: 3),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );  
+      onWillPop: () async {
+        {
+          if (_canPop) {
+            return true;
+          } else {
+            await Future.delayed(Duration(milliseconds: 500));
+            setState(() {
+              _canPop = true;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.blue,
+                content: Text('Press back button again to exit'),
+                duration: Duration(seconds: 3),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          }
         }
-      }
         await InterstitialAd.load(
             adUnitId: Platform.isAndroid
-                ? "ca-app-pub-2530239307985191/7293548385"
+                ? "ca-app-pub-2530239307985191/5038971352"
                 : "ca-app-pub-3940256099942544/4411468910",
             request: const AdRequest(),
             adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
               interstitialAd = ad;
               ad.show();
-               interstitialAd?.fullScreenContentCallback =
-                          FullScreenContentCallback(
-                              onAdDismissedFullScreenContent: (ad) {
-                        interstitialAd?.dispose();
-                        ad.dispose();
-                         SystemNavigator.pop();
-                      }, onAdFailedToShowFullScreenContent: (ad, err) {
-                        ad.dispose();
-                        interstitialAd?.dispose();
-                      });
+              interstitialAd?.fullScreenContentCallback =
+                  FullScreenContentCallback(
+                      onAdDismissedFullScreenContent: (ad) {
+                interstitialAd?.dispose();
+                ad.dispose();
+                SystemNavigator.pop();
+              }, onAdFailedToShowFullScreenContent: (ad, err) {
+                ad.dispose();
+                interstitialAd?.dispose();
+              });
             }, onAdFailedToLoad: (err) {
               debugPrint(err.message);
 
-              
               // ignore: dead_code
               // Navigator.push(context,MaterialPageRoute(builder: (context){
               //                return NextPage();
             }));
-            return false; 
-             
-        
-            
+        return false;
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -97,10 +116,10 @@ class _HomePageState extends State<HomePage> {
           elevation: 0,
           backgroundColor: Colors.blue,
         ),
-        body: SafeArea(
-          child: ListView(
-            controller: _scrollController,
-            children: [
+        body: Stack(
+          children: [
+            ListView(
+            children: [ 
               const SizedBox(
                 height: 10,
               ),
@@ -118,7 +137,11 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Financial Accounting",
                         monthYear: [
-                           MonthYear(
+                          MonthYear(
+                              name: "1.1 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
+                          MonthYear(
                               name: "1.1 Dec 2022",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
@@ -206,6 +229,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Business Management & Information System",
                         monthYear: [
                           MonthYear(
+                              name: "1.2 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
+                          MonthYear(
                               name: "1.2 Dec 2022",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
@@ -292,7 +319,14 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Business & Corporate Law",
                         monthYear: [
-                          MonthYear(name: "1.3 Dec 2022", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
+                          MonthYear(
+                              name: "1.3 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
+                          MonthYear(
+                              name: "1.3 Dec 2022",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                           MonthYear(
                               name: "1.3 Apr 2022",
                               link:
@@ -373,6 +407,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Introduction to Management Accounting",
                         monthYear: [
                           MonthYear(
+                              name: "1.4 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
+                          MonthYear(
                               name: "1.4 Dec 2022",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
@@ -437,6 +475,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Financial Reporting",
                         monthYear: [
+                          MonthYear(
+                              name: "2.1 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                           MonthYear(
                               name: "2.1 Dec 2022",
                               link:
@@ -525,6 +567,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Management Accounting",
                         monthYear: [
                           MonthYear(
+                              name: "2.2 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
+                          MonthYear(
                               name: "2.2 Dec 2022",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
@@ -612,6 +658,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Audit & Assurance",
                         monthYear: [
                           MonthYear(
+                              name: "2.3 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
+                          MonthYear(
                               name: "2.3 Dec 2022",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
@@ -698,7 +748,11 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Financial Management",
                         monthYear: [
-                           MonthYear(
+                          MonthYear(
+                              name: "2.4 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
+                          MonthYear(
                               name: "2.4 Dec 2022",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
@@ -785,6 +839,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Public Sector Accounting & Finance",
                         monthYear: [
+                          MonthYear(
+                              name: "2.5 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                           MonthYear(
                               name: "2.5 Dec 2022",
                               link:
@@ -873,6 +931,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Principles of Taxation",
                         monthYear: [
                           MonthYear(
+                              name: "2.6 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
+                          MonthYear(
                               name: "2.6 Dec 2022",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
@@ -937,6 +999,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Corporate Reporting",
                         monthYear: [
+                          MonthYear(
+                              name: "3.1 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                           MonthYear(
                               name: "3.1 Dec 2022",
                               link:
@@ -1025,6 +1091,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Advanced Audit & Assurance",
                         monthYear: [
                           MonthYear(
+                              name: "3.2 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
+                          MonthYear(
                               name: "3.2 Dec 2022",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
@@ -1111,6 +1181,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Advanced Taxation",
                         monthYear: [
+                          MonthYear(
+                              name: "3.3 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                           MonthYear(
                               name: "3.3 Dec 2022",
                               link:
@@ -1199,6 +1273,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Strategic Case Study",
                         monthYear: [
                           MonthYear(
+                              name: "3.4 Mar 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
+                          MonthYear(
                               name: "3.4 Dec 2022",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
@@ -1242,11 +1320,23 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
                 ),
               ),
-            ],
+              const Divider(
+                indent: 0,
+                thickness: 2,
+              ),
+              ListTile()
+               ],
+            
           ),
-        ),
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: 50,
+                child: AdWidget(ad: myBanner),
+              )
+        ),],
       ),
-    );
+    ),);
   }
 
   PopupMenuItem<MenuItem> buildItem(MenuItem item) => PopupMenuItem<MenuItem>(

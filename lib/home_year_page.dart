@@ -1,13 +1,44 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
 import 'package:ica_companion_pasco/widgets/year_list_tile.dart';
 
-class HomeYearPage extends StatelessWidget {
-  HomeYearPage({Key? key, required this.homeYear, required this.monthYear, required this.name})
-      : super(key: key);
+class HomeYearPage extends StatefulWidget {
+  HomeYearPage({Key? key, required this.homeYear, required this.monthYear, required this.name}) : super(key: key);
   final List<MonthYear> monthYear;
   final String name;
   final HomeYear homeYear;
+
+  @override
+  State<HomeYearPage> createState() => _HomeYearPageState();
+}
+
+class _HomeYearPageState extends State<HomeYearPage> {
+final BannerAd myBanner = BannerAd(
+      size: AdSize.banner,
+      adUnitId: Platform.isAndroid
+          ? "ca-app-pub-2530239307985191/4923044950"
+          : "ca-app-pub-3940256099942544/2934735716",
+      listener: BannerAdListener(
+        onAdLoaded: (Ad ad) {
+          print('$BannerAd loaded.');
+        },
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {
+          ad.dispose();
+          print('$BannerAd failedToLoad: $error');
+        },),
+      
+      request: AdRequest());
+      
+
+  @override
+  void initState() {
+    super.initState();
+    myBanner.load();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +47,7 @@ class HomeYearPage extends StatelessWidget {
       appBar: AppBar(toolbarHeight:55,
         centerTitle: true, automaticallyImplyLeading: false,
           title: Text(
-          homeYear.name,
+          widget.homeYear.name,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
@@ -35,12 +66,16 @@ class HomeYearPage extends StatelessWidget {
       ),
       body: SafeArea(
           child: ListView.builder(
-              itemCount: homeYear.monthYear.length,
+              itemCount: widget.homeYear.monthYear.length,
               itemBuilder: (context, index) {
                 return YearListTile(
-                  monthYear: homeYear.monthYear[index],
+                  monthYear: widget.homeYear.monthYear[index],
                 );
               })),
+              bottomNavigationBar: Container(
+                height: 50,
+                child: AdWidget(ad: myBanner),
+              ),
     );
   }
 }
