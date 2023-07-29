@@ -5,7 +5,7 @@ workflows:
     integrations:
       app_store_connect: app-store-connect
     environment:
-       ios_signing:
+      ios_signing:
         provisioning_profiles:
           - ICACompanionPasco
           # - ...
