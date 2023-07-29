@@ -1358,6 +1358,7 @@ class _HomePageState extends State<HomePage> {
               scheme: 'mailto',
               path: 'appymanstudio@gmail.com',
               queryParameters: {'subject': ''});
+          // ignore: deprecated_member_use
           launch(_emailLaunchUri.toString());
         }
         break;
@@ -1372,7 +1373,9 @@ class _HomePageState extends State<HomePage> {
         {
           final url =
               'https://play.google.com/store/apps/details?id=com.danielowusuacquah.ICA';
+          // ignore: deprecated_member_use
           if (await canLaunch(url)) {
+            // ignore: deprecated_member_use
             await launch(url);
           }
         }
