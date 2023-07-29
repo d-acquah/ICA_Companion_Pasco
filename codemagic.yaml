@@ -5,9 +5,12 @@ workflows:
     integrations:
       app_store_connect: app-store-connect
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.acquah.ICACompanionPasco
+       ios_signing:
+        provisioning_profiles:
+          - ICACompanionPasco
+          # - ...
+        certificates:
+          - Distribution_Certificate
       vars:
         APP_ID: 6452469602
       flutter: stable
