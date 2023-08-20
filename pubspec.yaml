@@ -35,7 +35,7 @@ dependencies:
   file: ^6.1.4
   google_mobile_ads: ^2.4.0
   onesignal_flutter: ^3.5.1
-  device_info_plus: ^8.1.0
+  
 
   
     
