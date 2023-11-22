@@ -1,42 +1,3 @@
-// class HomeYear {
-// HomeYear({
-//this.name,
-//this.monthyear,
-//});
-
-//String name;
-//String monthyear;
-//}
-
-//class Topics {
-//Topics({
-//this.name,
-//this.subject,
-//});
-
-//String name;
-//String subject;
-//}
-
-//class Subjects {
-//Subjects({
-//this.name,
-//this.subtopics,
-//});
-
-//String name;
-//String subtopics;
-//}
-
-//class SubTopics {
-//SubTopics({
-//this.name,
-//this.monthyear,
-//});
-
-//String name;
-//List <String> monthyear;
-//}
 
 class HomeYear {
   HomeYear({
@@ -78,4 +39,13 @@ class Topic {
 
   String name;
   List<MonthYear> monthYear;
+}
+class Trend {
+  Trend({
+    required this.name,
+    required this.trendTopics,
+  });
+
+  String name;
+  List<dynamic> trendTopics;
 }

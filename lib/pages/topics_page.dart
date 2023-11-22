@@ -19,7 +19,7 @@ final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
           ? "ca-app-pub-2530239307985191/4923044950"
-          : "ca-app-pub-3940256099942544/2934735716",
+          : "ca-app-pub-2530239307985191/4273991819",
      listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
           print('$BannerAd loaded.');
@@ -36,64 +36,23 @@ final BannerAd myBanner = BannerAd(
     super.initState();
     myBanner.load();
   }
-  InterstitialAd? interstitialAd;
-
-  bool _canPop = false;
+  
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async { {
-        if (_canPop) {
-          return true;
-        } else {
-          await Future.delayed(Duration(milliseconds: 500));
-          setState(() {
-            _canPop = true;
-          });
-         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.blue,
-            content: Text('Press back button again to exit'),
-            duration: Duration(seconds: 3),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );  
-        }
-      }
-        await InterstitialAd.load(
-            adUnitId: Platform.isAndroid
-                ? "ca-app-pub-2530239307985191/5038971352"
-                : "ca-app-pub-3940256099942544/4411468910",
-            request: const AdRequest(),
-            adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
-              interstitialAd = ad;
-              ad.show();
-               interstitialAd?.fullScreenContentCallback =
-                          FullScreenContentCallback(
-                              onAdDismissedFullScreenContent: (ad) {
-                        interstitialAd?.dispose();
-                        ad.dispose();
-                         SystemNavigator.pop();
-                      }, onAdFailedToShowFullScreenContent: (ad, err) {
-                        ad.dispose();
-                        interstitialAd?.dispose();
-                      });
-            }, onAdFailedToLoad: (err) {
-              debugPrint(err.message);
+       onWillPop: () async {
+        // Close the app without showing an ad
+        SystemNavigator.pop();
 
-              
-              // ignore: dead_code
-              // Navigator.push(context,MaterialPageRoute(builder: (context){
-              //                return NextPage();
-            }));
-            return false;  
-            
+        // Return true to indicate that the back button press is handled
+        return true;
       },
+      
       child: Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        centerTitle: true,
+        centerTitle: true, automaticallyImplyLeading: false,
         title: const Text(
           'Categorisation By Topics', maxLines: 2,
           overflow: TextOverflow.ellipsis,
@@ -171,6 +130,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Tangible Non-Current Asset",
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.1_financial_accounting.pdf"),
@@ -207,6 +167,7 @@ final BannerAd myBanner = BannerAd(
                     Topic(
                         name: "Interpretation of Financial Statements",
                         monthYear: [
+                          MonthYear(name: "Jul 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Dec 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Aug 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
@@ -228,6 +189,7 @@ final BannerAd myBanner = BannerAd(
                     Topic(
                         name: "Sources, Records & Books of Prime Entry",
                         monthYear: [
+                          MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Mar 2023 Q1 D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "May 2021 Q3 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Nov 2015 Q4 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015-_1.1_financial_accounting-2.pdf"),
@@ -237,6 +199,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Partnerships", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
@@ -262,6 +225,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Accruals & Prepayments", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q1 B & C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "May 2021 Q2 A(I), (II) & (III)", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
@@ -276,7 +240,9 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "Nov 2020 Q1 C", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "May 2019 Q3 C(III)", link: "https://mypascoblog.files.wordpress.com/2020/08/may_2019_1.1_financial_accounting-2.pdf"),
                     ]),
-                    Topic(name: "Control Accounts", monthYear: [
+                    Topic(name: "Control Accounts", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q2 A(I)", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.1_financial_accounting.pdf"),
@@ -320,6 +286,7 @@ final BannerAd myBanner = BannerAd(
                         ]),
                     Topic(name: "Introduction to Accounting", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.1_financial_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.1_financial_accounting.pdf"),
@@ -357,9 +324,9 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "Nov 2016 Q4", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2016-_1.1_financial_accounting-2.pdf"),
                     ]),
                     Topic(
-                        name:
-                            "Preparation of Financial Statements for Companies",
+                        name:"Preparation of Financial Statements for Companies",
                         monthYear: [
+                          MonthYear(name: "Jul 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Mar 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "Dec 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.1_financial_accounting.pdf"),
                           MonthYear(name: "May 2021 Q4", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.1_financial_accounting.pdf"),
@@ -413,6 +380,7 @@ final BannerAd myBanner = BannerAd(
                     name: "Business Management & Information System",
                     topics: [Topic(name: "The Information Systems & Information Technology", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Mar 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
@@ -439,6 +407,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Organisation Strategy & Planning", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Mar 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
@@ -457,6 +426,7 @@ final BannerAd myBanner = BannerAd(
                     ]),                   
                     Topic(name: "Human Resource Management", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
@@ -475,6 +445,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Marketing Management", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Mar 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
@@ -503,6 +474,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Operations Management", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "May 2021 Q3 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.2_business_management_info_systems.pdf"),
@@ -537,6 +509,7 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "May 2016 Q1", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016-_1.2_business_management_info_systems-3.pdf"),                    
                     ]),Topic(name: "Organisational Culture & Management Environment", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022-_1.2_business_management_info_systems.pdf"),
@@ -560,6 +533,8 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Organisations & The Business Environment", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
+                      MonthYear(name: "Jul 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Mar 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
@@ -586,6 +561,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Motivation & Behaviour", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Mar 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "Apr 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.2_business_management_info_systems.pdf"),
                       MonthYear(name: "May 2021 Q5 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.2_business_management_info_systems.pdf"),
@@ -627,6 +603,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Agency", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A(II)", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2021 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2021 Q2 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.3_business-corporate-law.pdf"),
@@ -639,6 +616,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Employment Law", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Apr 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.3_business-corporate-law.pdf"),
@@ -660,6 +638,9 @@ final BannerAd myBanner = BannerAd(
                     ]),         
                     Topic(name: "Company Law", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
+                      MonthYear(name: "Jul 2023 Q4 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
@@ -707,6 +688,7 @@ final BannerAd myBanner = BannerAd(
                     ]),             
                     Topic(name: "Partnership Law", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 D", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Mar 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Apr 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2021 Q5 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.3_business-corporate-law.pdf"),
@@ -722,6 +704,7 @@ final BannerAd myBanner = BannerAd(
                     ]),       
                     Topic(name: "Court Structure", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Mar 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2021 Q1 A & B(II)", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2021 Q1 C", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.3_business-corporate-law.pdf"),
@@ -734,6 +717,7 @@ final BannerAd myBanner = BannerAd(
                     ]),  
                     Topic(name: "Human Rights", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Mar 2023 Q1 C & D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2021 Q1 B(I)", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021-_1.3_business-corporate-law.pdf"),
@@ -748,6 +732,7 @@ final BannerAd myBanner = BannerAd(
                     ]),     
                      Topic(name: "Sale of Goods", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Dec 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "May 2021 Q3 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021-_1.3_business-corporate-law.pdf"),
                       MonthYear(name: "Nov 2020 Q4 B(II)", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020-_1.3_business-corporate-law.pdf"),
@@ -848,6 +833,7 @@ final BannerAd myBanner = BannerAd(
                     topics: [
                     Topic(name: "Accounting for Overhead", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A, B & C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "May 2021 Q4 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Nov 2020 Q5 C", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_1.4_introduction_to_management_accounting.pdf"),
@@ -867,11 +853,13 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Process Costing", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_1.4_introduction_to_management_accounting.pdf"),
                       ]),
                       Topic(name: "Budgeting", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 D", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
@@ -887,6 +875,8 @@ final BannerAd myBanner = BannerAd(
                       ]),
                        Topic(name: "Scope of Management Accounting", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_1.4_introduction_to_management_accounting.pdf"),
@@ -896,6 +886,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                        Topic(name: "Standard Costing & Variance Analysis", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q4 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_1.4_introduction_to_management_accounting.pdf"),
@@ -924,6 +915,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Forecasting", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "May 2021 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Nov 2020 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_1.4_introduction_to_management_accounting.pdf"),
@@ -940,6 +932,8 @@ final BannerAd myBanner = BannerAd(
                       ]),
                        Topic(name: "Cost-Volume-Profit Analysis", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 D", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
+                      MonthYear(name: "Jul 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q1", link: "https://mypascoblog.files.wordpress.com/2022/10/nov-2021_1.4_introduction_to_management_accounting.pdf"),
                       MonthYear(name: "Nov 2020 Q1", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_1.4_introduction_to_management_accounting.pdf"),
@@ -998,6 +992,7 @@ final BannerAd myBanner = BannerAd(
                     topics: [
                     Topic(name: "Conceptual & Regulatory Framework", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Mar 2023 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.1_financial_reporting.pdf"),
@@ -1031,6 +1026,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Consolidated Financial Statements", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
@@ -1067,6 +1063,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "IAS 37 : Provisions, Contigent Liabilies & Contigent Assets", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 D", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A(III)", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2020 Q2 A", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_2.1_financial_reporting.pdf"),
@@ -1078,6 +1075,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "IFRS 5 : Non-Current Assets Held for Sale & Discountinued Operations", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Mar 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "May 2021 Q2 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.1_financial_reporting.pdf"),
@@ -1123,6 +1121,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "IFRS 16 : Leases", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A(I)", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "May 2021 Q2 D", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.1_financial_reporting.pdf"),
@@ -1143,6 +1142,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "IFRS 3 : Business Combination", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 D", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2019 Q5 D", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_2.1_financial_reporting-2.pdf"),
                     ]),
@@ -1181,6 +1181,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                      Topic(name: "Preparation of Financial Statements(Published Accounts)", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
@@ -1198,6 +1199,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Interpretation of Financial Statements", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Mar 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
@@ -1230,6 +1232,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "IAS 36 : Impairment of Assets", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q2 C", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2020 Q2 B", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_2.1_financial_reporting.pdf"),
@@ -1243,6 +1246,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Ethical Framework", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q5 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.1_financial_reporting.pdf"),
@@ -1253,6 +1257,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "IAS 20 : Accounting for Government Grants & Disclosure of Government Assistance", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A(II)", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Apr 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.1_financial_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q5 C", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.1_financial_reporting.pdf"),
@@ -1317,6 +1322,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Standard Costing & Variance Analysis", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
@@ -1344,6 +1350,8 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Budgetary Control/Cash & Master Budgets", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.2_management_accounting.pdf"),
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
@@ -1419,6 +1427,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Divisional Performance", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "May 2021 Q1 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.2_management_accounting.pdf"),
@@ -1471,6 +1480,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Activity-Based Costing", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "May 2021 Q3 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_2.2_management_accounting.pdf"),
                       MonthYear(name: "May 2018 Q3 C", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018_2.2_management_accounting-2.pdf"),
@@ -1515,6 +1525,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Discounted Cash Flow", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.2_management_accounting.pdf"),
@@ -1556,10 +1567,12 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Quality", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q2 C(I)", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                     ]),
                     Topic(name: "Relevant Cost & Revenue", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.2_management_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.2_management_accounting.pdf"),
                       ]),],
                   ));
@@ -1588,6 +1601,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Audit Review & Finalisation", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A(I)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
@@ -1608,6 +1622,8 @@ final BannerAd myBanner = BannerAd(
                     ]), 
                     Topic(name: "Risk Assessment", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A(II)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
+                      MonthYear(name: "Jul 2023 Q1 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
@@ -1628,6 +1644,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Audit Procedures & Sampling", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
@@ -1660,6 +1677,8 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Professional Ethics", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
+                      MonthYear(name: "Jul 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q2 B & C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A & C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
@@ -1724,6 +1743,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Audit Evidence", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A & C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
@@ -1737,6 +1757,7 @@ final BannerAd myBanner = BannerAd(
                       ]), 
                       Topic(name: "Statutory Audit & Regulation", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
@@ -1753,6 +1774,7 @@ final BannerAd myBanner = BannerAd(
                       ]), 
                       Topic(name: "Internal Audit", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.3_audit_assurance.pdf"),
@@ -1772,6 +1794,8 @@ final BannerAd myBanner = BannerAd(
                     ]),
                      Topic(name: "Reporting", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
+                      MonthYear(name: "Jul 2023 Q2 C(II)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q5 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.3_audit_assurance.pdf"),
@@ -1794,6 +1818,7 @@ final BannerAd myBanner = BannerAd(
                     ]),
                     Topic(name: "Audit Planning & Documentation", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q1 A & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q1 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2021 Q1 C", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.3_audit_assurance.pdf"),
@@ -1810,6 +1835,7 @@ final BannerAd myBanner = BannerAd(
                       ]), 
                       Topic(name: "Corporate Governance", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.3_audit_assurance.pdf"),
@@ -1829,6 +1855,7 @@ final BannerAd myBanner = BannerAd(
                     ]), 
                     Topic(name: "The Nature & Scope of Auditing", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 C(I)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.3_audit_assurance.pdf"),
                       MonthYear(name: "May 2020 Q1 A", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.3_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2019 Q1 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2019_2.3_audit_assurance-2.pdf"),
@@ -1841,7 +1868,11 @@ final BannerAd myBanner = BannerAd(
                     Topic(name: "ISA 701 : Communicating Key Audit Matters in the Independent Auditor's Report", 
                     monthYear: [
                       MonthYear(name: "May 2018 Q5", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018_2.3_audit_assurance-2.pdf"),            
-                    ]), ],
+                    ]),
+                     Topic(name: "Not-For-Profit Organisations", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.3_audit_assurance.pdf"),            
+                    ]),],
                   ));
                 }));
               },
@@ -1862,6 +1893,7 @@ final BannerAd myBanner = BannerAd(
                     name: "Financial Management",
                     topics: [Topic(name: "Introduction to Financial Management", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Mar 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
@@ -1887,6 +1919,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Mergers & Acquisition", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Mar 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Apr 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.4_financial_management.pdf"),
@@ -1895,6 +1928,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Simple Interest & Compound Interest", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Mar 2023 Q3 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
@@ -1907,6 +1941,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Financial Markets", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Mar 2023 Q4 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Nov 2021 Q4 C", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.4_financial_management.pdf"),
@@ -1917,8 +1952,9 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "Nov 2016 Q4 C", link: "https://mypascoblog.files.wordpress.com/2020/08/nov_2016_2.4_financial_management-2.pdf"),
                       MonthYear(name: "Nov 2015 Q1 D", link: "https://mypascoblog.files.wordpress.com/2020/08/nov_2015_2.4_financial_management-2.pdf"),
                       ]),
-                      Topic(name: "Working Capital,Inventory,Receivables & Payables and Cash Management", 
+                      Topic(name: "Working Capital Management,Inventory Management,Management of Receivables & Payables and Cash Management", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Mar 2023 Q5 A(I)", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Apr 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.4_financial_management.pdf"),
@@ -1938,12 +1974,13 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "May 2016 Q2", link: "https://mypascoblog.files.wordpress.com/2020/08/may_2016_2.4_financial_management-2.pdf"),
                       MonthYear(name: "Nov 2015 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov_2015_2.4_financial_management-2.pdf"),
                       ]),
-                       Topic(name: "Management of Receivable & Payable and Financial Markets(Combined)", 
+                       Topic(name: "Management of Receivables & Payables and Financial Markets(Combined)", 
                     monthYear: [
                       MonthYear(name: "Dec 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       ]),
                       Topic(name: "The Cost of Capital", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "May 2021 Q3 B", link: "https://mypascoblog.files.wordpress.com/2021/07/may_2021_2.4_financial_management.pdf"),
                       MonthYear(name: "Nov 2019 Q1 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov_2019_2.4_financial_management-2.pdf"),
@@ -1964,6 +2001,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Investment Appraisals", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Mar 2023 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
@@ -2013,6 +2051,8 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Foreign Currency Risk", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.4_financial_management.pdf"),
                       MonthYear(name: "Dec 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.4_financial_management.pdf"),
                       MonthYear(name: "Aug 2022 Q5 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.4_financial_management.pdf"),
@@ -2109,6 +2149,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Preparation & Presentation of Financial Statements for Covered Entities", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q2", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Apr 2022 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q2", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.5_public_sector_accounting.pdf"),
@@ -2119,6 +2160,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Preparation & Presentation of Financial Statements for Local Government", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Nov 2020 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "May 2020 Q2", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.5_public_sector_accounting.pdf"),
@@ -2131,6 +2173,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Public Sector Fiscal Planning & Budgeting", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
@@ -2179,6 +2222,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Public Procurement", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
@@ -2202,6 +2246,8 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "The Context of Public Financial Management in Ghana", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
+                      MonthYear(name: "Jul 2023 Q1 B(III)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Nov 2021 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.5_public_sector_accounting.pdf"),
@@ -2231,6 +2277,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Public Sector Financial Initiatives", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q4 B & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
@@ -2251,6 +2298,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Public Expenditure & Financial Accountability Framework", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
@@ -2263,6 +2311,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Financial Statements Discussion & Analysis", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
@@ -2275,6 +2324,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Accounting Policies for Cash & Accruals Based Accounting System", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Mar 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q1 A(II)", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
@@ -2290,6 +2340,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "General Purpose Financial Reporting Framework", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 B(I) & (II)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Dec 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.5_public_sector_accounting.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.5_public_sector_accounting.pdf"),
@@ -2340,6 +2391,7 @@ final BannerAd myBanner = BannerAd(
                     name: "Principles of Taxation",
                     topics: [Topic(name: "Fiscal Policy", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.6_principles_of_taxation.pdf"),
@@ -2351,6 +2403,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Tax Administration in Ghana", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q1 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q1 C & D", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
@@ -2364,6 +2417,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Value Added Tax", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 A, B & C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q2 A, B & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
@@ -2376,6 +2430,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Withholding Tax", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
@@ -2390,12 +2445,13 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "Nov 2020 Q5 B & C", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "May 2020 Q5 C", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.6_principles_of_taxation.pdf"), 
                       ]),
-                      Topic(name: "Withholding Tax & Tax Stamp(Combined)", 
+                      Topic(name: "Withholding Tax & Stamp Duty(Combined)", 
                     monthYear: [
                       MonthYear(name: "Nov 2021 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.6_principles_of_taxation.pdf"), 
                       ]),
                       Topic(name: "Employment Income", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q3 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
@@ -2424,6 +2480,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Gains on Realisation of Assets & Gift Tax", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 B & C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q5 C & D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q5 C & D", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q5 C & D", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
@@ -2437,6 +2494,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                        Topic(name: "Social Security & Pensions", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 D", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q2 D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q2 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_2.6_principles_of_taxation.pdf"),
@@ -2448,6 +2506,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Ghana Tax System", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_2.6_principles_of_taxation.pdf"),
@@ -2462,9 +2521,14 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Capital Allowance", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A & B(II)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Nov 2021 Q4", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "Nov 2020 Q4", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_2.6_principles_of_taxation.pdf"),
                       MonthYear(name: "May 2020 Q4 A", link: "https://mypascoblog.files.wordpress.com/2020/10/may-2020_2.6_principles_of_taxation.pdf"), 
+                      ]),
+                      Topic(name: "Permanent Establishment", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 B(I) & (III)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
                       ]),
                        Topic(name: "Miscellaneous", 
                     monthYear: [
@@ -2500,6 +2564,7 @@ final BannerAd myBanner = BannerAd(
                     name: "Corporate Reporting",
                     topics: [Topic(name: "Group Financial Statements (Conso)", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
@@ -2527,6 +2592,10 @@ final BannerAd myBanner = BannerAd(
                     monthYear: [
                       MonthYear(name: "Mar 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       ]),
+                      Topic(name: "IFRS 3 : Business Combination", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
+                    ]),
                       Topic(name: "IAS 7 : Cash Flow Statement", 
                     monthYear: [
                       MonthYear(name: "Nov 2021 Q5", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.1_corporate_reporting.pdf"),
@@ -2548,6 +2617,10 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "Nov 2018 Q2 D", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2018_3.1_corporate_reporting-2.pdf"),
                       MonthYear(name: "Nov 2017 Q2 C", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_3.1_corporate_reporting-2.pdf"),
                       MonthYear(name: "Nov 2015 Q2 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_3.1_corporate_reporting-2.pdf"),
+                      ]),
+                      Topic(name: "IAS 38 : Intangible Assets & Financial Instrument", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 A(III)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
                       ]),
                       Topic(name: "IAS 38 : Intangible Assets & IAS 36 : Provisions, Contigent Liabilities and Contigent Asset", 
                     monthYear: [
@@ -2589,6 +2662,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Interpretation of Financial Statements", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q5", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.1_corporate_reporting.pdf"),
@@ -2607,6 +2681,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Professional & Ethical Duty of the Accountant", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Mar 2023 Q3 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q3 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q3 C", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.1_corporate_reporting.pdf"),
@@ -2631,6 +2706,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "IAS 36 : Impairment of Assets", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "May 2019 Q2 B", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2019_3.1_corporate-reporting-2.pdf"),
                       MonthYear(name: "Nov 2016 Q2 D", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2016_3.1_corporate_reporting-2.pdf"),
@@ -2647,6 +2723,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Business Valuations", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Aug 2022 Q4 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.1_corporate_reporting.pdf"),
@@ -2663,6 +2740,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "IFRS 16 : Leases", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Dec 2022 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.1_corporate_reporting.pdf"),
                     ]),
                       Topic(name: "IAS 21 : The Effects of Changes in Foreign Exchange Rates", 
@@ -2782,9 +2860,14 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "IFRS 2 : Share Based Payments", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Nov 2021 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.1_corporate_reporting.pdf"),
                       MonthYear(name: "Nov 2020 Q3 A", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.1_corporate_reporting.pdf"),
-                      ]),],
+                      ]),
+                      Topic(name: "IFRS 11 : Joint Arrangement & IAS 28 : Investment in Associates & Joint Ventures", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 A(I) & (II)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.1_corporate_reporting.pdf"),
+                     ]),],
                   ));
                 }));
               },
@@ -2805,6 +2888,7 @@ final BannerAd myBanner = BannerAd(
                     name: "Advanced Audit & Assurance",
                     topics: [Topic(name: "Reporting", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q3", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q5 C", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
@@ -2824,8 +2908,9 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "May 2016 Q5 A", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016_3.2_advanced_audit_assurance-2.pdf"),
                       MonthYear(name: "Nov 2015 Q1 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_3.2_advanced_audit_assurance-2.pdf"),
                       ]),
-                      Topic(name: "Professional Liability", 
+                      Topic(name: "Professional Responsibility & Liability", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A(II)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"), 
                       MonthYear(name: "Dec 2022 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2021 Q1 A", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.2_advanced_audit_assurance.pdf"),
@@ -2836,6 +2921,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Public Sector Audit", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4 A(I)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"), 
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Aug 2022 Q4", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.2_advanced_audit_assurance.pdf"),
@@ -2916,8 +3002,14 @@ final BannerAd myBanner = BannerAd(
                     monthYear: [
                       MonthYear(name: "May 2019 Q4 A", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2019_3.2_advanced_audit_assurance-2.pdf"),
                       ]),
+                       Topic(name: "Practice Management", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),
+                      ]),
                        Topic(name: "The Regulatory Environment", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"), 
+                      MonthYear(name: "Jul 2023 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"), 
                       MonthYear(name: "Aug 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "May 2021 Q5 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2020 Q5 A", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.2_advanced_audit_assurance.pdf"),
@@ -2931,6 +3023,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Rules of Professional Conduct", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q1 A & B", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "May 2021 Q1 A", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.2_advanced_audit_assurance.pdf"),
@@ -2946,6 +3039,22 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "May 2016 Q1 B", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2016_3.2_advanced_audit_assurance-2.pdf"),
                       MonthYear(name: "Nov 2015 Q5 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_3.2_advanced_audit_assurance-2.pdf"),
                       ]),
+                      Topic(name: "ISA 260 : Communication With Those Charged With Governance", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),            
+                     ]), 
+                      Topic(name: "ISA 260 & IFRS 15 : Revenue From Contract With Customers", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),           
+                    ]), 
+                      Topic(name: "ISA 260 & Rules of Professional Conduct", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 D", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),           
+                    ]), 
+                      Topic(name: "ISA 220 & ISA 240", 
+                    monthYear: [
+                     MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),            
+                    ]),
                        Topic(name: "Obtaining & Accepting Professional Appointments", 
                     monthYear: [
                       MonthYear(name: "Nov 2021 Q1 B", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.2_advanced_audit_assurance.pdf"),
@@ -2957,6 +3066,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                        Topic(name: "Assurance Service", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q1 C", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.2_advanced_audit_assurance.pdf"),
                       ]),
                       Topic(name: "Audit-Related Services & Other Assurance Service", 
@@ -2967,6 +3077,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Current Issues", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Dec 2022 Q5 A & B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Apr 2022 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.2_advanced_audit_assurance.pdf"),
                       MonthYear(name: "Nov 2021 Q5 A", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.2_advanced_audit_assurance.pdf"),
@@ -3023,7 +3134,7 @@ final BannerAd myBanner = BannerAd(
                     monthYear: [
                       MonthYear(name: "May 2019 Q5 A", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2019_3.2_advanced_audit_assurance-2.pdf"),
                       MonthYear(name: "Nov 2017 Q5 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_3.2_advanced_audit_assurance-2.pdf"),
-                      ]),
+                      ]),   
                        Topic(name: "Miscellaneous", 
                     monthYear: [
                       MonthYear(name: "May 2018 Q3 B", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018_3.2_advanced_audit_assurance-2.pdf"),
@@ -3048,6 +3159,7 @@ final BannerAd myBanner = BannerAd(
                     name: "Advanced Taxation",
                     topics: [Topic(name: "Business Income", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q3 D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q2 A & B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
@@ -3077,7 +3189,7 @@ final BannerAd myBanner = BannerAd(
                     monthYear: [
                       MonthYear(name: "May 2019 Q3 A", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2019_3.4_taxation_fiscal_policy-2.pdf"),
                       ]),
-                      Topic(name: "Captial Gains Tax", 
+                      Topic(name: "Capital Gains Tax", 
                     monthYear: [
                       MonthYear(name: "May 2018 Q3 A", link: "https://mypascoblog.files.wordpress.com/2020/08/may-2018_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(name: "Nov 2015 Q1 B", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_3.4_taxation_fiscal_policy-2.pdf"),
@@ -3116,6 +3228,7 @@ final BannerAd myBanner = BannerAd(
                       ]), 
                       Topic(name: "Tax Administration", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q4 B & C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Dec 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q3 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.3_advanced_taxation.pdf"),
@@ -3158,6 +3271,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Tax Planning", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Mar 2023 Q2 C", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2022_3.3_advanced_taxation.pdf"),
@@ -3203,10 +3317,14 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Transfer Pricing", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 B & C", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Apr 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.3_advanced_taxation.pdf"),
                       ]),
                        Topic(name: "Anti-Avoidance Measures", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.3_advanced_taxation.pdf"),
+                      MonthYear(name: "Jul 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.3_advanced_taxation.pdf"),
+                      MonthYear(name: "Jul 2023 Q1 A(V)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.3_advanced_taxation.pdf"), 
                       MonthYear(name: "Dec 2022 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Aug 2022 Q5 B", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.3_advanced_taxation.pdf"),
                       MonthYear(name: "Nov 2021 Q2 B & C", link: "https://mypascoblog.files.wordpress.com/2022/11/nov-2021_3.3_advanced_taxation.pdf"),
@@ -3243,6 +3361,10 @@ final BannerAd myBanner = BannerAd(
                       MonthYear(name: "Nov 2017 Q3 C", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2017_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(name: "Nov 2015 Q5 A", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_3.4_taxation_fiscal_policy-2.pdf"),
                       MonthYear(name: "Nov 2015 Q4 D", link: "https://mypascoblog.files.wordpress.com/2020/08/nov-2015_3.4_taxation_fiscal_policy-2.pdf"),
+                      ]),
+                      Topic(name: "Withholding Taxes & Stamp Duty(Combined)", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q1 A(I), (II), (III) & (IV)", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.3_advanced_taxation.pdf"), 
                       ]),
                       Topic(name: "Petroleum Operations", 
                     monthYear: [
@@ -3372,6 +3494,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Strategy Implementation", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Mar 2023 Q5", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Mar 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q4 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
@@ -3390,6 +3513,7 @@ final BannerAd myBanner = BannerAd(
                        ]),
                        Topic(name: "Methods of Development",  
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Mar 2023 Q3 A", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q6 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q4 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
@@ -3405,6 +3529,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Corporate Governance", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q6 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Mar 2023 Q8", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Mar 2023 Q7", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q7", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
@@ -3419,6 +3544,7 @@ final BannerAd myBanner = BannerAd(
                        ]),
                       Topic(name: "Ethics", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q6 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Mar 2023 Q2 D", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q6 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Aug 2022 Q3", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
@@ -3449,6 +3575,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Strategy,Stakeholders & Mission", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q2 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Apr 2022 Q1", link: "https://mypascoblog.files.wordpress.com/2022/12/apr-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Nov 2020 Q1", link: "https://mypascoblog.files.wordpress.com/2021/03/nov-2020_3.4_strategic_case_study.pdf"),
                       ]),
@@ -3459,6 +3586,7 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Sources of Finance", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Mar 2023 Q6 B", link: "https://mypascoblog.files.wordpress.com/2023/06/mar-2023_3.4_strategic_case_study.pdf"),
                       ]),
                       Topic(name: "Sources of Finance & Capital Structure", 
@@ -3472,12 +3600,14 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Controlling Risks", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q4", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q8 B", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Aug 2022 Q8 (I)", link: "https://mypascoblog.files.wordpress.com/2022/12/aug-2022_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "May 2021 Q7", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.4_strategic_case_study.pdf"),
                       ]),
                       Topic(name: "International Financial Management", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q5 A", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "May 2021 Q8", link: "https://mypascoblog.files.wordpress.com/2021/07/may-2021_3.4_strategic_case_study.pdf"),
                       ]),
                       Topic(name: "Conflicts of Interest & Ethical Conflict Resolution", 
@@ -3490,7 +3620,12 @@ final BannerAd myBanner = BannerAd(
                       ]),
                       Topic(name: "Functional Strategies", 
                     monthYear: [
+                      MonthYear(name: "Jul 2023 Q3 B", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       MonthYear(name: "Dec 2022 Q8 A", link: "https://mypascoblog.files.wordpress.com/2023/05/dec-2022_3.4_strategic_case_study.pdf"),
+                      ]),
+                      Topic(name: "Social and Environmental Issues in Ethics & Business", 
+                    monthYear: [
+                      MonthYear(name: "Jul 2023 Q1", link: "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.4_strategic_case_study.pdf"),
                       ]),],
                   ));
                 }));

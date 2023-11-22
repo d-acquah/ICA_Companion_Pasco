@@ -1,39 +1,45 @@
+import 'dart:async';
 
-//import 'dart:io';
-
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-//import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'bottom_navigation_page.dart';
+import 'package:ica_companion_pasco/models/AppOpenAdManager.dart';
+import 'package:ica_companion_pasco/pages/bottom_navigation_page.dart';
 
-class SplashScreen extends StatelessWidget {
+
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    Future.delayed(Duration(seconds: 7)).then((value) {
-      Navigator.pushReplacement(
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  AppOpenAdManager appOpenAdManager = AppOpenAdManager();
+
+  @override
+  void initState() {
+    super.initState();
+
+    //Load AppOpen Ad
+    appOpenAdManager.loadAd();
+
+    //Show AppOpen Ad After 8 Seconds
+    Future.delayed(const Duration(milliseconds: 5000)).then((value) {
+      //Here we will wait for 8 seconds to load our ad
+      //After 8 second it will go to HomePage
+      appOpenAdManager.showAdIfAvailable();
+      Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => BottomNavigationPage()),
+        MaterialPageRoute(
+          builder: (context) => const BottomNavigationPage(),
+        ),
       );
     });
+  }
 
-InterstitialAd.load(
-            adUnitId: Platform.isAndroid
-                ? "ca-app-pub-2530239307985191/5038971352"
-                : "ca-app-pub-3940256099942544/4411468910",
-            request: const AdRequest(),
-           adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
-              ad.show();
-               
-            }, onAdFailedToLoad: (err) {
-             debugPrint(err.message);
-
-              
-              // ignore: dead_code
-              // Navigator.push(context,MaterialPageRoute(builder: (context){
-              //                return NextPage();
-           }));
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue,
       body: Center(
@@ -46,15 +52,9 @@ InterstitialAd.load(
         fit: BoxFit.cover,
         image: AssetImage('asset/app_logo.png'),
           ),
-          
-               
-            
-          
-        
           ),
         ),
       ),
     );
   }
 }
-

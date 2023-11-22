@@ -11,7 +11,8 @@ class HomeYearListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       ListTile(
-        title: Text(monthYear.name),
+        title: Text(monthYear.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal,color: Colors.black),
+                ),
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context){
             return PDFViewer( monthYear: monthYear);
@@ -21,9 +22,10 @@ class HomeYearListTile extends StatelessWidget {
       ),
       
       const Divider(
-              indent: 0,
-              thickness: 2,
-            ),
+                indent: 0,
+                thickness: 1.5,
+                color: Colors.grey,
+              ),
     ]);
   }
 }
