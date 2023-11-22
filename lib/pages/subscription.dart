@@ -29,9 +29,8 @@ class _SubscriptionsState extends State<Subscriptions> {
   bool isRestore = false;
 
   final List<ProductId> _productsIds = [
-    ProductId(id: "f_weekly_sub", isConsumable: false),
-    ProductId(id: "f_monthly_sub", isConsumable: false),
-    ProductId(id: "f_yearly_sub", isConsumable: false),
+    ProductId(id: "monthly_sub", isConsumable: false),
+    ProductId(id: "quarterly_sub", isConsumable: false),
   ];
 
   late BannerAd _bannerAd;
@@ -42,7 +41,7 @@ class _SubscriptionsState extends State<Subscriptions> {
   late PurchaseDetails oldPurchaseDetails;
 
   final adUnitId = Platform.isAndroid
-      ? 'ca-app-pub-1426300554937726/2293465469'
+      ? 'ca-app-pub-3940256099942544/6300978111'
       : 'ca-app-pub-3940256099942544/2934735716';
 
   @override

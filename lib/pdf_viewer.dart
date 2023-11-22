@@ -20,7 +20,7 @@ class _PDFViewerState extends State<PDFViewer> {
 final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
-          ? "ca-app-pub-2530239307985191/4923044950"
+          ? "ca-app-pub-3940256099942544/6300978111"
           : "ca-app-pub-3940256099942544/2934735716",
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
@@ -47,7 +47,23 @@ final BannerAd myBanner = BannerAd(
       );
     });
   }
+@override
+  Widget build(BuildContext context) {
+    
 
+InterstitialAd.load(
+            adUnitId: Platform.isAndroid
+                ? "ca-app-pub-3940256099942544/1033173712"
+                : "ca-app-pub-2530239307985191/5454409211",
+            request: const AdRequest(),
+           adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
+              ad.show();
+               
+            }, onAdFailedToLoad: (err) {
+             debugPrint(err.message);
+
+           }));
+ 
   @override
   Widget build(BuildContext context) {
     return SafeArea(

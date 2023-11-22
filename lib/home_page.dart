@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
-          ? "ca-app-pub-2530239307985191/4923044950"
+          ? "ca-app-pub-3940256099942544/6300978111"
           : "ca-app-pub-2530239307985191/4273991819",
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
