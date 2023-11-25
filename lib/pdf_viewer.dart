@@ -1,4 +1,6 @@
 
+
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ class PDFViewer extends StatefulWidget {
   final MonthYear monthYear;
 
   const PDFViewer({Key? key, required this.monthYear}) : super(key: key);
+  
 
   @override
   State<PDFViewer> createState() => _PDFViewerState();
@@ -21,7 +24,7 @@ final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
           ? "ca-app-pub-3940256099942544/6300978111"
-          : "ca-app-pub-3940256099942544/2934735716",
+          : "ca-app-pub-2530239307985191/4273991819",
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
           print('$BannerAd loaded.');
@@ -32,11 +35,12 @@ final BannerAd myBanner = BannerAd(
         },),
       
       request: AdRequest());
+      
 
 @override
   void initState() {
     super.initState();
-    myBanner.load();
+     myBanner.load();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -47,7 +51,7 @@ final BannerAd myBanner = BannerAd(
       );
     });
   }
-@override
+   @override
   Widget build(BuildContext context) {
     
 
@@ -62,12 +66,26 @@ InterstitialAd.load(
             }, onAdFailedToLoad: (err) {
              debugPrint(err.message);
 
+              
+              // ignore: dead_code
+              // Navigator.push(context,MaterialPageRoute(builder: (context){
+              //                return NextPage();
            }));
  
-  @override
-  Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+        appBar: AppBar(
+        centerTitle: true, automaticallyImplyLeading: false,
+        title: Text((widget.monthYear.name),
+        style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
+          ),
+        elevation: 0,
+        backgroundColor: Colors.blue,
+        ),
+      
+ 
+          
     body: SfPdfViewer.network(widget.monthYear.link),
     bottomNavigationBar: Container(
     height: 50,

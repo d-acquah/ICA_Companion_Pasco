@@ -102,6 +102,7 @@ class _SubscriptionsState extends State<Subscriptions> {
           if (value)
             {
               await iApEngine.queryProducts(_productsIds).then((value) {
+                _products.clear();
                 setState(() {
                   _products.addAll(value.productDetails);
                 });
@@ -242,7 +243,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                         child: Row(
                           children: [
                             const Text(
-                              "${Constants.appName} Go ",
+                              "${Constants.appName} ",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 30,

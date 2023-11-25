@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/home_page.dart';
 import 'package:ica_companion_pasco/models/AppOpenAdManager.dart';
-//import 'package:ica_companion_pasco/pages/premium_page.dart';
+import 'package:ica_companion_pasco/pages/subscription.dart';
 import 'package:ica_companion_pasco/pages/topics_page.dart';
 import 'package:ica_companion_pasco/pages/trend_page.dart';
 
@@ -25,6 +25,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> with Widget
     HomePage(),
     TrendPage(),
     TopicsPage(),
+    Subscriptions(),
     //PremiumPage(),
   ];
   @override
@@ -124,6 +125,10 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> with Widget
           BottomNavigationBarItem(
             icon: Icon(Icons.topic),
             label: 'Topics',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.topic),
+            label: 'Premium',
           ),
         ],
       ),
