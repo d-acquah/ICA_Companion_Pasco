@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/pages/splash_screen.dart';
+import 'package:onepref/onepref.dart';
 // ignore: import_of_legacy_library_into_null_safe
 //import 'package:ica_companion_pasco/pages/bottom_navigation_page.dart';
 //import 'package:ica_companion_pasco/pages/splash_screen.dart';
@@ -9,6 +10,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MobileAds.instance.initialize();
+  await OnePref.init();
   runApp(const MyApp());
 }
 
