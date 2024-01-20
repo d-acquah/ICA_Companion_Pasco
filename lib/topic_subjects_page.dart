@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
 import 'package:ica_companion_pasco/widgets/list_tile.dart';
+import 'package:onepref/onepref.dart';
 
 class TopicsSubjectsPage extends StatefulWidget {
   TopicsSubjectsPage({Key? key, required this.topicsSubjects}) : super(key: key);
@@ -17,6 +18,7 @@ class TopicsSubjectsPage extends StatefulWidget {
 }
 
 class _TopicsSubjectsPageState extends State<TopicsSubjectsPage> {
+bool _isLoaded = true;
 final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
@@ -71,10 +73,17 @@ final BannerAd myBanner = BannerAd(
                   topic: widget.topicsSubjects.topics[index],
                 );
               })),
-               bottomNavigationBar: Container(
-                height: 50,
-                child: AdWidget(ad: myBanner),
-              ),
+               bottomNavigationBar: Visibility(
+                  visible: _isLoaded && OnePref.getPremium() == false,
+                  child: _isLoaded
+                      ? Container(
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width,
+                          height: myBanner.size.height.toDouble(),
+                          child: AdWidget(ad: myBanner),
+                        )
+                      : Container(),
+                ),
     );
   }
 }

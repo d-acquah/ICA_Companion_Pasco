@@ -8,6 +8,7 @@ import 'package:ica_companion_pasco/home_year_page.dart';
 import 'package:flutter/material.dart';
 import 'package:ica_companion_pasco/models/menu_item.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
+import 'package:onepref/onepref.dart';
 //import 'package:ica_companion_pasco/pages/next_page.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,6 +22,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // final ScrollController _scrollController = ScrollController();
+  IApEngine iApEngine = IApEngine();
+  bool _isLoaded = true;
   final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
@@ -42,6 +45,17 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     myBanner.load();
+    restoreSub();
+
+    iApEngine.inAppPurchase.purchaseStream.listen((list) {
+      if (list.isNotEmpty) {
+         OnePref.setPremium(true);
+        //restore the subscription
+      } else {
+        //do nothing or deactivate the subscription if the user is premium
+        OnePref.setPremium(false);
+      }
+    });
   }
 
   
@@ -67,6 +81,8 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             PopupMenuButton<MenuItem>(
+              color: Colors.white,
+              iconColor: Colors.white,
               onSelected: (item) => onSelected(context, item),
               itemBuilder: (context) => [
                 ...MenuItems.itemsFirst.map(buildItem).toList(),
@@ -1344,13 +1360,19 @@ class _HomePageState extends State<HomePage> {
                ],
             
           ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 50,
-                child: AdWidget(ad: myBanner),
-              )
-        ),],
+          Visibility(
+            visible: _isLoaded && OnePref.getPremium() == false,
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: _isLoaded
+                      ? Container(
+                  height: 50,
+                  child: AdWidget(ad: myBanner),
+                )
+                    : Container(),
+          ),
+        ),
+        ],
       ),
     ),);
   }
@@ -1396,5 +1418,9 @@ class _HomePageState extends State<HomePage> {
           }
         }
     }
+  }
+  
+  void restoreSub()  {
+    iApEngine.inAppPurchase.restorePurchases();
   }
 }

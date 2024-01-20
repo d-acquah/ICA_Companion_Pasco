@@ -17,6 +17,6 @@ class Constants {
 
   static List<String> benefitRemoveAd = ["Remove Ads"];
 
-  static const String appName = "ICA Companion";
+  static const String appName = "ICA Companion : Pasco";
   static Color txtColor = Colors.brown.shade800;
 }

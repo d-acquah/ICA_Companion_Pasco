@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
 import 'package:ica_companion_pasco/widgets/year_list_tile.dart';
+import 'package:onepref/onepref.dart';
 
 class TopicsYearsPage extends StatefulWidget {
   TopicsYearsPage({Key? key, required this.monthYear, required this.title}) : super(key: key);
@@ -15,6 +16,7 @@ class TopicsYearsPage extends StatefulWidget {
 }
 
 class _TopicsYearsPageState extends State<TopicsYearsPage> {
+bool _isLoaded = true;
 final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
@@ -72,10 +74,17 @@ final BannerAd myBanner = BannerAd(
                   monthYear: widget.monthYear[index],
                 );
               })),
-               bottomNavigationBar: Container(
-                height: 50,
-                child: AdWidget(ad: myBanner),
-              ),
+               bottomNavigationBar: Visibility(
+                  visible: _isLoaded && OnePref.getPremium() == false,
+                  child: _isLoaded
+                      ? Container(
+                          alignment: Alignment.center,
+                          width: MediaQuery.of(context).size.width,
+                          height: myBanner.size.height.toDouble(),
+                          child: AdWidget(ad: myBanner),
+                        )
+                      : Container(),
+                ),
     );
   }
 }

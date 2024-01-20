@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
 import 'package:ica_companion_pasco/trend_topics_page.dart';
+import 'package:onepref/onepref.dart';
 
 class TrendPage extends StatefulWidget {
   TrendPage({Key? key}) : super(key: key);
@@ -17,6 +18,8 @@ class TrendPage extends StatefulWidget {
 }
 
 class _TrendPageState extends State<TrendPage> {
+  IApEngine iApEngine = IApEngine();
+  bool _isLoaded = true;
   final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
@@ -29,6 +32,17 @@ class _TrendPageState extends State<TrendPage> {
   void initState() {
     super.initState();
     myBanner.load();
+    restoreSub();
+
+     iApEngine.inAppPurchase.purchaseStream.listen((list) {
+      if (list.isNotEmpty) {
+         OnePref.setPremium(true);
+        //restore the subscription
+      } else {
+        //do nothing or deactivate the subscription if the user is premium
+        OnePref.setPremium(false);
+      }
+    });
   }
 
   @override
@@ -523,15 +537,25 @@ class _TrendPageState extends State<TrendPage> {
                 ListTile()
               ],
             ),
-            Align(
+            Visibility(
+            visible: _isLoaded && OnePref.getPremium() == false,
+            child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
+                child: _isLoaded
+                      ? Container(
                   height: 50,
                   child: AdWidget(ad: myBanner),
-                )),
+                )
+                    : Container(),
+          ),
+        ),
           ],
         ),
       ),
     );
+  }
+  
+  void restoreSub() {
+    iApEngine.inAppPurchase.restorePurchases();
   }
 }

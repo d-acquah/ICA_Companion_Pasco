@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:ica_companion_pasco/pages/bottom_navigation_page.dart';
+//import 'package:ica_companion_pasco/pages/bottom_navigation_page.dart';
 // ignore: depend_on_referenced_packages
 import 'package:in_app_purchase/in_app_purchase.dart';
 // ignore: depend_on_referenced_packages
@@ -30,7 +30,7 @@ class _SubscriptionsState extends State<Subscriptions> {
 
   final List<ProductId> _productsIds = [
     ProductId(id: "monthly_sub", isConsumable: false),
-    ProductId(id: "quarterly_sub", isConsumable: false),
+    //ProductId(id: "quarterly_sub", isConsumable: false),
   ];
 
   late BannerAd _bannerAd;
@@ -47,6 +47,7 @@ class _SubscriptionsState extends State<Subscriptions> {
   @override
   void initState() {
     super.initState();
+    restoreSub();
 
     isSubscribed = OnePref.getPremium()!;
 
@@ -57,7 +58,11 @@ class _SubscriptionsState extends State<Subscriptions> {
         setState(() {
           subExisting = true;
           oldPurchaseDetails = purchaseDetailsList[0];
+          OnePref.setPremium(true);
         });
+      } else {
+        //do nothing or deactivate the subscription if the user is premium
+        OnePref.setPremium(false);
       }
 
       listenPurchasedActivities(purchaseDetailsList);
@@ -183,105 +188,147 @@ class _SubscriptionsState extends State<Subscriptions> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          elevation: 0.0,
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          title: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Row(
+              children: [
+                const Text(
+                  "${Constants.appName} ",
+                  style: TextStyle(
+                    fontSize: 24, // Adjust the font size as needed
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: isSubscribed ? Colors.green : Colors.blue,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(7.0), // Adjust as needed
+                    child: Text(
+                      "PRO",
+                      style: TextStyle(
+                        fontSize: 14, // Adjust the font size as needed
+                        fontWeight: FontWeight.w400,
+                        color: isSubscribed ? Colors.white : Colors.blue,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+
+          backgroundColor: Colors.blue,
+          // elevation: 0.0, // Set elevation to zero
+        ),
         body: SafeArea(
           child: Container(
             decoration: const BoxDecoration(
-              color: Colors.black,
-              image: DecorationImage(
-                image: AssetImage('lib/images/sub_bg.jpeg'),
-                fit: BoxFit.cover,
-                opacity: 0.7,
-              ),
+              color: Colors.white,
             ),
             child: Column(
+              
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      OnClickAnimation(
-                          onTap: () => {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const BottomNavigationPage()),
-                                    (Route<dynamic> route) => false)
-                              },
-                          child: const Text(
-                            "Dismiss",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          )),
-                      OnClickAnimation(
-                        onTap: () async => {
-                          await InAppPurchase.instance.restorePurchases().then(
-                            (value) {
-                              isRestore = true;
-                              _products.clear();
-                              getProducts();
-                            },
-                          ),
-                        },
-                        child: const Text(
-                          "Restore",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 50.0, vertical: 25.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            const Text(
-                              "${Constants.appName} ",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
+                      vertical: 0.0, horizontal: 0.0),
+                  child: SizedBox(
+                    
+                    height:MediaQuery.of(context).size.height * 0.36,
+                    child: ListView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        const ListTile(
+                          title: Text(
+                            'Upgrade to Premium',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 18),
+                          ),
+                          subtitle: Text(
+                            "Here's what you get:",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 14,
+                                color: Color(0xff333333)),
+                          ),
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.12,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0.0, horizontal: 12.0),
+                            child: const Card(
+                              color: Colors.white,
+                              child: ListTile(
+                                title: Text(
+                                  'Downloads',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                                ),
+                                subtitle: Text(
+                                  "Download and view past questions offline",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 14,
+                                      color: Color(0xff333333)),
+                                ),
+                                leading: Icon(Icons.download),
+                                iconColor: Colors.blue,
                               ),
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color:
-                                    isSubscribed ? Colors.green : Colors.orange,
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  "PRO",
-                                  style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        //const SizedBox(
+                        //height: 0,
+                        //  ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.12,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0.0, horizontal: 12.0),
+                            child: Card(
+                              color: Colors.white,
+                              child: ListTile(
+                                title: Text(
+                                  'No Ads',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18),
+                                ),
+                                subtitle: Text(
+                                  "Enjoy ICA Companion without Ads",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 14,
+                                      color: Color(0xff333333)),
+                                ),
+                                leading: Image.asset(
+                                  'asset/No Ads1.jpg', // Replace with the path to your image
+                                  width: 60, // Adjust the width as needed
+                                  height: 60, // Adjust the height as needed
                                 ),
                               ),
-                            )
-                          ],
+                            ),
+                          )
                         ),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 120,
-                  child: ListView.builder(
-                    itemCount: Constants.benefits.length,
-                    itemBuilder: (context, index) => Benefit(
-                      title: Constants.benefits[index],
-                      icon: Icons.check,
-                      iconBackgroundColor: Colors.orange,
-                      iconColor: Colors.white,
-                      titleStyle: const TextStyle(color: Colors.white),
+                        const SizedBox(
+                          height: 0,
+                        ),
+                      ],
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 Visibility(
                   visible: !_products.isNotEmpty,
@@ -291,84 +338,69 @@ class _SubscriptionsState extends State<Subscriptions> {
                     child: CircularProgressIndicator(),
                   ),
                 ),
-                Expanded(
+                Flexible(
                   child: Visibility(
                     visible: _products.isNotEmpty,
                     child: ListView.builder(
                       itemBuilder: ((context, index) => Padding(
                             padding: const EdgeInsets.symmetric(
-                                vertical: 5.0, horizontal: 25.0),
+                                vertical: 0.0, horizontal: 17.0),
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.orange,
-                                          width: 0.5,
+                                    child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.blue,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 0.0,
+                                    ),
+                                    child: ListTile(
+                                      title: Text(
+                                        _products[index].price,
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.normal),
+                                      ),
+                                      subtitle: Text(
+                                        _products[index].description,
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.normal),
+                                      ),
+                                      trailing: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(
+                                                  8.0), // Adjust the border radius as needed
+                                            ),
+                                            foregroundColor: Colors.white,
+                                            backgroundColor: Colors.blue,
+                                            minimumSize: const Size(40, 40),
+                                            textStyle:
+                                                const TextStyle(fontSize: 14)),
+                                        onPressed: () async {
+                                          setState(() {
+                                            isRestore = false;
+                                          });
+                                          iApEngine.handlePurchase(
+                                              _products[index], _productsIds);
+                                        },
+                                        child: const Text(
+                                          "Subscribe",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 15.0,
-                                          ),
-                                          child: ListTile(
-                                            title: Text(
-                                              _products[index].price,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            subtitle: Text(
-                                              _products[index].description,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            trailing: OnClickAnimation(
-                                              onTap: () async {
-                                                setState(() {
-                                                  isRestore = false;
-                                                });
-
-                                                await iApEngine.inAppPurchase
-                                                    .restorePurchases()
-                                                    .whenComplete(() async {
-                                                  await Future.delayed(
-                                                          const Duration(
-                                                              seconds: 1))
-                                                      .then((value) async {
-                                                    if (subExisting &&
-                                                        oldPurchaseDetails
-                                                                .productID !=
-                                                            _products[index]
-                                                                .id) {
-                                                      await iApEngine
-                                                          .upgradeOrDowngradeSubscription(
-                                                              oldPurchaseDetails,
-                                                              _products[index])
-                                                          .then((value) {
-                                                        setState(() {
-                                                          subExisting = false;
-                                                        });
-                                                      });
-                                                    } else {
-                                                      iApEngine.handlePurchase(
-                                                          _products[index],
-                                                          _productsIds);
-                                                    }
-                                                  });
-                                                });
-                                              },
-                                              child: const Text(
-                                                "Subscribe",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ))),
-                                ),
+                                    ),
+                                  ),
+                                )),
                               ],
                             ),
                           )),
@@ -376,32 +408,85 @@ class _SubscriptionsState extends State<Subscriptions> {
                     ),
                   ),
                 ),
-                Visibility(
-                  visible: _isLoaded && OnePref.getPremium() == false,
-                  child: _isLoaded
-                      ? Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width,
-                          height: _bannerAd.size.height.toDouble(),
-                          child: AdWidget(ad: _bannerAd),
-                        )
-                      : Container(),
+                const SizedBox(
+                  height: 30,
                 ),
-                const Padding(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 25.0, horizontal: 25.0),
-                  child: Text(
-                    "The above ad will be removed if the user has subscribed to one of our subscrptions\n---------\nSubscritions automatically renews monthly until canceled.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
+                Center(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                    child: Container(
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  8.0), // Adjust the border radius as needed
+                            ),
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.blue,
+                            minimumSize: const Size(50, 50),
+                            textStyle: const TextStyle(fontSize: 14)),
+                        onPressed: () async => {
+                          await InAppPurchase.instance.restorePurchases().then(
+                            (value) {
+                              isRestore = true;
+                              _products.clear();
+                              getProducts();
+                            },
+                          ),
+                        },
+                        child: const Text(
+                          "Restore Subscription",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
                   ),
-                )
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SizedBox(
+                    child: Text(
+                      "If subscription is successful, a premium badge(PRO) appears at top right corner of this screen.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                ),
+                //const SizedBox(
+                //height: 5,
+                // ),
+                SizedBox(
+                  height: 40,
+                  child: Container(
+                    child: Visibility(
+                      visible: _isLoaded && OnePref.getPremium() == false,
+                      child: _isLoaded
+                          ? Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                // width: MediaQuery.of(context).size.width,
+                                height: 50,
+                                child: AdWidget(ad: _bannerAd),
+                              ),
+                            )
+                          : Container(),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       );
+
+  void restoreSub() {
+    iApEngine.inAppPurchase.restorePurchases();
+  }
 }

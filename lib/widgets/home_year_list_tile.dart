@@ -23,8 +23,7 @@ class HomeYearListTile extends StatelessWidget {
       
       const Divider(
                 indent: 0,
-                thickness: 1.5,
-                color: Colors.grey,
+                thickness: 2,
               ),
     ]);
   }

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
 import 'package:ica_companion_pasco/topic_subjects_page.dart';
+import 'package:onepref/onepref.dart';
 
 class TopicsPage extends StatefulWidget {
   TopicsPage({Key? key}) : super(key: key);
@@ -15,6 +16,8 @@ class TopicsPage extends StatefulWidget {
 
 class _TopicsPageState extends State<TopicsPage> {
   //final ScrollController _scrollController = ScrollController();
+  IApEngine iApEngine = IApEngine();
+  bool _isLoaded = true;
 final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
@@ -35,6 +38,17 @@ final BannerAd myBanner = BannerAd(
   void initState() {
     super.initState();
     myBanner.load();
+    restoreSub();
+
+     iApEngine.inAppPurchase.purchaseStream.listen((list) {
+      if (list.isNotEmpty) {
+         OnePref.setPremium(true);
+        //restore the subscription
+      } else {
+        //do nothing or deactivate the subscription if the user is premium
+        OnePref.setPremium(false);
+      }
+    });
   }
   
 
@@ -3642,16 +3656,27 @@ final BannerAd myBanner = BannerAd(
               ListTile()
           ],
         ),
-         Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: 50,
-                child: AdWidget(ad: myBanner),
-              )
+        Visibility(
+            visible: _isLoaded && OnePref.getPremium() == false,
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: _isLoaded
+                      ? Container(
+                            alignment: Alignment.center,
+                            width: MediaQuery.of(context).size.width,
+                            height: myBanner.size.height.toDouble(),
+                            child: AdWidget(ad: myBanner),
+                          )
+                    : Container(),
+          ),
         ),
           ],
       ),
     ),
     );
+  }
+  
+  void restoreSub() {
+    iApEngine.inAppPurchase.restorePurchases();
   }
 }
