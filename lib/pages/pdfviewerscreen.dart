@@ -9,7 +9,7 @@ class PdfViewerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(toolbarHeight:65,
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text(

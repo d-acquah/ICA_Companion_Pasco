@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
-          ? "ca-app-pub-3940256099942544/6300978111"
+          ? "ca-app-pub-2530239307985191/4923044950"
           : "ca-app-pub-2530239307985191/4273991819",
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
+        appBar: AppBar(toolbarHeight:65,
           centerTitle: true, automaticallyImplyLeading: false,
           //iconTheme: const IconThemeData(color: Colors.white),
           title: const Text(
@@ -113,6 +113,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Financial Accounting",
                         monthYear: [
+                          MonthYear(
+                              name: "1.1 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023-_1.1_financial_accounting.pdf"),
                           MonthYear(
                               name: "1.1 Jul 2023",
                               link:
@@ -209,6 +213,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Business Management & Information System",
                         monthYear: [
                           MonthYear(
+                              name: "1.2 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023-_1.2_business_management_info_systems.pdf"),
+                          MonthYear(
                               name: "1.2 Jul 2023",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.2_business_management_info_systems.pdf"),
@@ -304,6 +312,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Business & Corporate Law",
                         monthYear: [
                           MonthYear(
+                              name: "1.3 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023-_1.3_business-corporate-law.pdf"),
+                          MonthYear(
                               name: "1.3 Jul 2023",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/09/jul-2023-_1.3_business-corporate-law.pdf"),
@@ -395,6 +407,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Introduction to Management Accounting",
                         monthYear: [
                           MonthYear(
+                              name: "1.4 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_1.4_introduction_to_management_accounting.pdf"),
+                          MonthYear(
                               name: "1.4 Jul 2023",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_1.4_introduction_to_management_accounting.pdf"),
@@ -467,6 +483,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Financial Reporting",
                         monthYear: [
+                          MonthYear(
+                              name: "2.1 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_2.1_financial_reporting.pdf"),
                           MonthYear(
                               name: "2.1 Jul 2023",
                               link:
@@ -563,6 +583,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Management Accounting",
                         monthYear: [
                           MonthYear(
+                              name: "2.2 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_2.2_management_accounting.pdf"),
+                          MonthYear(
                               name: "2.2 Jul 2023",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.2_management_accounting.pdf"),
@@ -657,6 +681,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Audit & Assurance",
                         monthYear: [
+                          MonthYear(
+                              name: "2.3 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_2.3_audit_assurance.pdf"),
                           MonthYear(
                               name: "2.3 Jul 2023",
                               link:
@@ -753,6 +781,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Financial Management",
                         monthYear: [
                           MonthYear(
+                              name: "2.4 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_2.4_financial_management.pdf"),
+                          MonthYear(
                               name: "2.4 Jul 2023",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.4_financial_management.pdf"),
@@ -847,6 +879,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Public Sector Accounting & Finance",
                         monthYear: [
+                          MonthYear(
+                              name: "2.5 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_2.5_public_sector_accounting.pdf"),
                           MonthYear(
                               name: "2.5 Jul 2023",
                               link:
@@ -943,6 +979,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Principles of Taxation",
                         monthYear: [
                           MonthYear(
+                              name: "2.6 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_2.6_principles_of_taxation.pdf"),
+                          MonthYear(
                               name: "2.6 Jul 2023",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_2.6_principles_of_taxation.pdf"),
@@ -1015,6 +1055,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Corporate Reporting",
                         monthYear: [
+                          MonthYear(
+                              name: "3.1 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_3.1_corporate_reporting.pdf"),
                            MonthYear(
                               name: "3.1 Jul 2023",
                               link:
@@ -1111,6 +1155,10 @@ class _HomePageState extends State<HomePage> {
                         name: "Advanced Audit & Assurance",
                         monthYear: [
                           MonthYear(
+                              name: "3.2 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_3.2_advanced_audit_assurance.pdf"),
+                          MonthYear(
                               name: "3.2 Jul 2023",
                               link:
                                   "https://mypascoblog.files.wordpress.com/2023/09/jul-2023_3.2_advanced_audit_assurance.pdf"),
@@ -1205,6 +1253,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Advanced Taxation",
                         monthYear: [
+                          MonthYear(
+                              name: "3.3 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_3.3_advanced_taxation.pdf"),
                            MonthYear(
                               name: "3.3 Jul 2023",
                               link:
@@ -1300,6 +1352,10 @@ class _HomePageState extends State<HomePage> {
                       homeYear: HomeYear(
                         name: "Strategic Case Study",
                         monthYear: [
+                          MonthYear(
+                              name: "3.4 Nov 2023",
+                              link:
+                                  "https://mypascoblog.files.wordpress.com/2024/01/nov-2023_3.4_strategic_case_study.pdf"),
                           MonthYear(
                               name: "3.4 Jul 2023",
                               link:

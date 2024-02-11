@@ -13,7 +13,7 @@ class _PremiumPageState extends State<PremiumPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: AppBar(toolbarHeight:65,
         centerTitle: true,
         title: const Text(
           'Premium',

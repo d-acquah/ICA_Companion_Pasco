@@ -48,11 +48,11 @@ class _PdfListScreenState extends State<PdfListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: AppBar(toolbarHeight:65,
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text(
-          'Downloaded PDFs',
+          'Downloads',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w600,

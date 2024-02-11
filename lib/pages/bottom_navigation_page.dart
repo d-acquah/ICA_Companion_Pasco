@@ -12,6 +12,8 @@ import 'package:ica_companion_pasco/pages/premium_page.dart';
 import 'package:ica_companion_pasco/pages/subscription.dart';
 import 'package:ica_companion_pasco/pages/topics_page.dart';
 import 'package:ica_companion_pasco/pages/trend_page.dart';
+import 'package:ica_companion_pasco/utils/topics_page_locked.dart';
+import 'package:ica_companion_pasco/utils/trend_page_locked.dart';
 import 'package:onepref/onepref.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -105,20 +107,46 @@ class _BottomNavigationPageState extends State<BottomNavigationPage>
             onTap: (index) async {
               switch (index) {
                 case 0:
-                case 2:
                 case 3:
                   setState(() {
                     currentIndex = index;
                   });
                   break;
                 case 1:
-                  setState(() {
-                    currentIndex = index;
-                  });
-                  showPersistentDialog(context,
-                      'Trend analysis provides insight into the pattern of questions asked over a relevant period of time based on an analysis of the topics examined during those periods. Certain subjects do not necessarily follow any predictable pattern and as such the trend analysis provides the frequently examined topics in such cases. This is meant to be a guide for preparation towards the ICA examination and does not necessarily represent the topics that will be examined.');
+                  restoreSub(); // Start restoring the subscription
+                  // You may need to wait for some time here if restoreSub() performs asynchronous operations internally.
+                  await Future.delayed(
+                      Duration(milliseconds: 500)); // Example: Wait for 1 second
+                  if (_isLoaded && OnePref.getPremium() == true) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+
+                    showPersistentDialog(context,
+                        'Trend analysis provides insight into the pattern of questions asked over a relevant period of time based on an analysis of the topics examined during those periods. Certain subjects do not necessarily follow any predictable pattern and as such the trend analysis provides the frequently examined topics in such cases. This is meant to be a guide for preparation towards the ICA examination and does not necessarily represent the topics that will be examined.');
+                  } else {
+                    showTrendLockedDialog(context);
+                  }
+                  break;
+                case 2:
+                  restoreSub(); // Start restoring the subscription
+                  // You may need to wait for some time here if restoreSub() performs asynchronous operations internally.
+                  await Future.delayed(
+                      Duration(milliseconds: 500)); // Example: Wait for 1 second
+                  if (_isLoaded && OnePref.getPremium() == true) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  } else {
+                    showTopicsLockedDialog(context);
+                  }
+
                   break;
                 case 4:
+                  restoreSub(); // Start restoring the subscription
+                  // You may need to wait for some time here if restoreSub() performs asynchronous operations internally.
+                  await Future.delayed(
+                      Duration(seconds: 1)); // Example: Wait for 1 second
                   if (_isLoaded && OnePref.getPremium() == true) {
                     setState(() {
                       currentIndex = index;
@@ -132,7 +160,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage>
                             centerTitle: true,
                             automaticallyImplyLeading: false,
                             title: Text(
-                              'Downloaded PDFs',
+                              'Downloads',
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w600,
@@ -180,7 +208,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage>
                                       ),
                                       content: SingleChildScrollView(
                                         child: Text(
-                                          'The download feature is only available to premium users. Subscribe to the premium version to get access to download and view past questions offline.',
+                                          'The download feature is available to premium users only. Subscribe to the premium version to get access to download and view past questions offline.',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 18,
@@ -196,7 +224,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage>
                                           child: Text(
                                             'OK',
                                             style: TextStyle(
-                                              color: Colors.white, fontSize: 20,
+                                              color: Colors.white,
+                                              fontSize: 20,
                                               fontWeight: FontWeight
                                                   .w600, // Set font weight
                                             ),
@@ -227,12 +256,12 @@ class _BottomNavigationPageState extends State<BottomNavigationPage>
                 label: 'Topics',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.topic),
+                icon: Icon(Icons.workspace_premium_outlined),
                 label: 'Premium',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.download),
-                label: 'Downloads',
+                label: 'Download',
               ),
             ],
           ),
@@ -317,6 +346,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
+          toolbarHeight: 65,
           title: Text('Non-Dismissible AlertDialog Example'),
         ),
         body: Center(

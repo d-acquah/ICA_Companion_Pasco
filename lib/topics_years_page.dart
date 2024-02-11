@@ -20,7 +20,7 @@ bool _isLoaded = true;
 final BannerAd myBanner = BannerAd(
       size: AdSize.banner,
       adUnitId: Platform.isAndroid
-          ? "ca-app-pub-3940256099942544/6300978111"
+          ? "ca-app-pub-2530239307985191/4923044950"
           : "ca-app-pub-3940256099942544/2934735716",
       listener: BannerAdListener(
         onAdLoaded: (Ad ad) {
@@ -47,7 +47,7 @@ final BannerAd myBanner = BannerAd(
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        toolbarHeight: 55,
+        toolbarHeight:65,
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text(

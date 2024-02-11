@@ -19,11 +19,13 @@ class PDFViewer extends StatefulWidget {
 }
 
 class _PDFViewerState extends State<PDFViewer> {
+  IApEngine iApEngine = IApEngine();
+  bool isLoading = false;
   bool _isLoaded = true;
   final BannerAd myBanner = BannerAd(
     size: AdSize.banner,
     adUnitId: Platform.isAndroid
-        ? "ca-app-pub-3940256099942544/6300978111"
+        ? "ca-app-pub-2530239307985191/4923044950"
         : "ca-app-pub-2530239307985191/4273991819",
     listener: BannerAdListener(
       onAdLoaded: (Ad ad) {
@@ -41,6 +43,7 @@ class _PDFViewerState extends State<PDFViewer> {
   void initState() {
     super.initState();
     myBanner.load();
+    restoreSub();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -49,6 +52,15 @@ class _PDFViewerState extends State<PDFViewer> {
           duration: Duration(seconds: 3),
         ),
       );
+    });
+    iApEngine.inAppPurchase.purchaseStream.listen((list) {
+      if (list.isNotEmpty) {
+         OnePref.setPremium(true);
+        //restore the subscription
+      } else {
+        //do nothing or deactivate the subscription if the user is premium
+        OnePref.setPremium(false);
+      }
     });
   }
 
@@ -115,7 +127,7 @@ class _PDFViewerState extends State<PDFViewer> {
   Widget build(BuildContext context) {
     InterstitialAd.load(
         adUnitId: Platform.isAndroid
-            ? "ca-app-pub-3940256099942544/1033173712"
+            ? "ca-app-pub-2530239307985191/4612100836"
             : "ca-app-pub-2530239307985191/5454409211",
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
@@ -130,50 +142,72 @@ class _PDFViewerState extends State<PDFViewer> {
           //                return NextPage();
         }));
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          title: Text(
-            widget.monthYear.name,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.blue,
-          actions: [ 
-            IconButton(
-        onPressed: () {
-          // Check the condition before deciding the action
-          if (_isLoaded && OnePref.getPremium() == true) {
-            _downloadAndSavePdf();
-          } else {
-            // Show a persistent dialog here
-            showPersistentDialog(context, "The download feature is only available to premium users. Subscribe to the premium version to get access to download and view past questions offline.");
-          }
-        },
-        icon: const Icon(Icons.download),
-        color: Colors.white,
-      ),
-  ],
-),
-        body: SfPdfViewer.network(widget.monthYear.link),
-        bottomNavigationBar: Visibility(
-          visible: _isLoaded && OnePref.getPremium() == false,
-          child: _isLoaded
-              ? Container(
-                  alignment: Alignment.center,
-                  width: MediaQuery.of(context).size.width,
-                  height: myBanner.size.height.toDouble(),
-                  child: AdWidget(ad: myBanner),
-                )
-              : Container(),
+  child: Scaffold(
+    appBar: AppBar(toolbarHeight:65,
+      centerTitle: true,
+      automaticallyImplyLeading: false,
+      title: Text(
+        widget.monthYear.name,
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
         ),
       ),
-    );
+      elevation: 0,
+      backgroundColor: Colors.blue,
+      actions: [ 
+        IconButton(
+          onPressed: () async {
+            // Check the condition before deciding the action
+            if (_isLoaded && OnePref.getPremium() == true) {
+              try {
+                setState(() {
+                  isLoading = true; // Set loading to true when starting the download
+                });
+
+                await _downloadAndSavePdf();
+
+                // Additional actions after successful download can be added here
+              } catch (error) {
+                print("Error during download: $error");
+                // Handle download error if needed
+              } finally {
+                setState(() {
+                  isLoading = false; // Set loading back to false when download is complete (whether success or failure)
+                });
+              }
+            } else {
+              showPersistentDialog(
+                context,
+                "The download feature is available to premium users only. Subscribe to the premium version to get access to download and view past questions offline.",
+              );
+            }
+          },
+          icon: const Icon(Icons.download),
+          color: Colors.white,
+        ),
+      ],
+    ),
+    body: isLoading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : SfPdfViewer.network(widget.monthYear.link),
+    bottomNavigationBar: Visibility(
+      visible: _isLoaded && OnePref.getPremium() == false,
+      child: _isLoaded
+          ? Container(
+              alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width,
+              height: myBanner.size.height.toDouble(),
+              child: AdWidget(ad: myBanner),
+            )
+          : Container(),
+    ),
+  ),
+);
+
   }
   
   void showPersistentDialog(BuildContext context, String message) {
@@ -216,5 +250,8 @@ class _PDFViewerState extends State<PDFViewer> {
         );
       },
     );
+  }
+  void restoreSub()  {
+    iApEngine.inAppPurchase.restorePurchases();
   }
 }
