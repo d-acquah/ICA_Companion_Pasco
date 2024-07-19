@@ -186,7 +186,7 @@ class _TrendPageState extends State<TrendPage> {
                             "2. Standard Costing & Variance Analysis",
                             "3. Accounting for Inventory & Labour",
                             "4. Scope of Management Accounting",
-                            "5. Cost-Volume-Profit Analysis",
+                            "5. Forecasting",
                           ],
                         ),
                         name: '',
@@ -318,6 +318,7 @@ class _TrendPageState extends State<TrendPage> {
                             "2. Simple Interest & Compound Interest",
                             "3. Foreign Currency Risk",
                             "4. Investment Appraisals",
+                            "5. The Cost of Capital",
                            
                               ],
                         ),
@@ -370,13 +371,6 @@ class _TrendPageState extends State<TrendPage> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Level 3',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,color: Colors.black),
-                  ),
-                ),
                 ListTile(
                   onTap: () {
                     Navigator.push(context,
@@ -408,7 +402,14 @@ class _TrendPageState extends State<TrendPage> {
                   indent: 0,
                   thickness: 2,
                 ),
-                ListTile(
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Level 3',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600,color: Colors.black),
+                  ),
+                ),
+                 ListTile(
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {

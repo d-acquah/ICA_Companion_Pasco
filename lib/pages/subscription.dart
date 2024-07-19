@@ -467,9 +467,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                                                     fontSize: 14),
                                               ),
                                               onPressed: () async {
-                                                setState(() {
-                                                  isRestore = false;
-                                                });
+                                                
                                                 iApEngine.handlePurchase(
                                                     _products[index],
                                                     _productsIds);
