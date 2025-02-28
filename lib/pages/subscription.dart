@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:ica_companion_pasco/pages/auth_page.dart';
+import 'package:ica_companion_pasco/paystack_home.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:onepref/onepref.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/snackbar.dart';
-import '../../main.dart';
 import '../utils/constants.dart';
 
 class Subscriptions extends StatefulWidget {
@@ -18,14 +19,17 @@ class Subscriptions extends StatefulWidget {
 }
 
 class _SubscriptionsState extends State<Subscriptions> {
+  final String subscriptionKey = 'subscriptionStatus';
+  final String subscriptionDateKey = 'subscriptionStartDate';
   late final List<ProductDetails> _products = <ProductDetails>[];
   IApEngine iApEngine = IApEngine();
   bool isSubscribed = false;
   bool isRestore = false;
+  bool valid = false; // From SharedPreferences
 
   final List<ProductId> _productsIds = [
-   ProductId(id: "monthly_sub", isConsumable: false),
-   //ProductId(id: "quarterly_sub", isConsumable: false),
+    ProductId(id: "monthly_sub", isConsumable: false),
+    //ProductId(id: "quarterly_sub", isConsumable: false),
   ];
 
   late BannerAd _bannerAd;
@@ -39,10 +43,59 @@ class _SubscriptionsState extends State<Subscriptions> {
       ? 'ca-app-pub-2530239307985191/4923044950'
       : 'ca-app-pub-3940256099942544/2934735716';
 
+  // Set subscription status in shared_preferences
+  Future<void> setSubscriptionStatus(bool status) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (status) {
+      // Store subscription status and start date when successful
+      await prefs.setBool(subscriptionKey, true);
+      await prefs.setString(
+          subscriptionDateKey, DateTime.now().toIso8601String());
+    } else {
+      // Clear subscription status on failure
+      await prefs.setBool(subscriptionKey, false);
+      await prefs.remove(subscriptionDateKey);
+    }
+  }
+
+// Check if subscription is still valid (within 30 days)
+  Future<bool> isSubscriptionValid() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? isSubscribed = prefs.getBool(subscriptionKey);
+    final String? subscriptionDateStr = prefs.getString(subscriptionDateKey);
+
+    if (isSubscribed != null && isSubscribed && subscriptionDateStr != null) {
+      final DateTime subscriptionStartDate =
+          DateTime.parse(subscriptionDateStr);
+      final DateTime currentDate = DateTime.now();
+      final int minutesElapsed =
+          currentDate.difference(subscriptionStartDate).inDays;
+
+      if (minutesElapsed <= 5) {
+        return true; // Subscription is still valid
+      } else {
+        // Subscription expired
+        await setSubscriptionStatus(false);
+        return false;
+      }
+    }
+    return false;
+  }
+
   @override
   void initState() {
     super.initState();
     restoreSub();
+    // Check subscription status on app start
+    isSubscriptionValid().then((isvalid) {
+      if (valid) {
+        setState(() {
+          valid = true;
+        });
+      } else {
+        print('Subscription has expired.');
+      }
+    });
 
     isSubscribed = OnePref.getPremium()!;
 
@@ -202,7 +255,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                 ),
               ),
               Visibility(
-                visible: isSubscribed,
+                visible: isSubscribed || valid,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -475,9 +528,9 @@ class _SubscriptionsState extends State<Subscriptions> {
                                               child: const Text(
                                                 "Subscribe",
                                                 style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
                                           ),

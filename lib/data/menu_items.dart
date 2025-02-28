@@ -6,6 +6,7 @@ class MenuItems {
     itemContactUs,
     itemShare,
     itemRateApp,
+  
  ];
  
   static const itemContactUs = MenuItem(
@@ -22,4 +23,5 @@ class MenuItems {
     text: 'Rate App',
     icon: Icons.star,
   );
+  
 }

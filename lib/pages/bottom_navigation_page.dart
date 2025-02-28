@@ -7,7 +7,6 @@ import 'package:ica_companion_pasco/home_page.dart';
 import 'package:ica_companion_pasco/models/AppOpenAdManager.dart';
 import 'package:ica_companion_pasco/models/PdfDocument.dart';
 import 'package:ica_companion_pasco/pages/download_page.dart';
-import 'package:ica_companion_pasco/pages/pdfviewerscreen.dart';
 import 'package:ica_companion_pasco/pages/premium_page.dart';
 import 'package:ica_companion_pasco/pages/subscription.dart';
 import 'package:ica_companion_pasco/pages/topics_page.dart';
@@ -41,6 +40,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage>
     Subscriptions(),
     PdfListScreen(),
     PremiumPage(),
+    
   ];
   @override
   void initState() {

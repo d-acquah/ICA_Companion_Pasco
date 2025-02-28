@@ -6,11 +6,16 @@ import 'package:onepref/onepref.dart';
 //import 'package:ica_companion_pasco/pages/bottom_navigation_page.dart';
 //import 'package:ica_companion_pasco/pages/splash_screen.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MobileAds.instance.initialize();
   await OnePref.init();
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(const MyApp());
 }
 
