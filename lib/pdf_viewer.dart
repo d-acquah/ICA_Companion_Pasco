@@ -127,7 +127,7 @@ class _PDFViewerState extends State<PDFViewer> {
   Widget build(BuildContext context) {
     InterstitialAd.load(
         adUnitId: Platform.isAndroid
-            ? "ca-app-pub-2530239307985191/4612100836"
+            ? "ca-app-pub-2530239307985191/46121008361"
             : "ca-app-pub-2530239307985191/5454409211",
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
