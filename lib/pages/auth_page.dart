@@ -12,11 +12,17 @@ class AuthPage extends StatelessWidget {
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(), 
         builder: (context, snapshot) {
-          // user logged in
-          if (snapshot.hasData) {
-            return PayStackPage(title: '', amount: '', email: '', reference: '',);
-          }
-          // user is not logged in
+          // if user is logged in, pass their email (if available) to PayStackPage.
+          if (snapshot.hasData && snapshot.data != null) {
+            final userEmail = snapshot.data!.email ?? '';
+            return PayStackPage(
+              title: 'Paystack Payment',
+              amount: '10',              // Example hardcoded amount; change as needed.
+              email: userEmail,
+              reference: 'initialRef',   // Initial reference value; PayStackPage can generate a unique one.
+            );
+          } 
+          // if user is not logged in, show LoginOrRegisterPage.
           else {
             return LoginOrRegisterPage();
           }

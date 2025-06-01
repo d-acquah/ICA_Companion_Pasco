@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:ica_companion_pasco/payment_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'payment_page.dart';
 
 class PayStackPage extends StatefulWidget {
-  const PayStackPage({super.key, required String title, required String amount, required String email, required String reference});
+  final String title;
+  final String amount;
+  final String email;
+  final String reference;
+
+  const PayStackPage({
+    Key? key,
+    required this.title,
+    required this.amount,
+    required this.email,
+    required this.reference,
+  }) : super(key: key);
 
   @override
   State<PayStackPage> createState() => _PayStackPageState();
@@ -10,103 +22,126 @@ class PayStackPage extends StatefulWidget {
 
 class _PayStackPageState extends State<PayStackPage> {
   final _formKey = GlobalKey<FormState>();
-  final referenceController = TextEditingController();
   final emailController = TextEditingController();
+  final FocusNode emailFocusNode = FocusNode();
+  bool isEmailFocused = false;
 
-  // Fixed amount: GHS 10
-  final String fixedAmount = '10';
+  @override
+  void initState() {
+    super.initState();
+    emailController.text = widget.email;
+    emailFocusNode.addListener(() {
+      setState(() {
+        isEmailFocused = emailFocusNode.hasFocus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    emailFocusNode.dispose();
+    super.dispose();
+  }
+
+  String generateReference() {
+    return 'ref${DateTime.now().millisecondsSinceEpoch}';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mobile Money Payment'),
-        elevation: 0,
+        title: const Text('Mobile Money'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Form(
           key: _formKey,
-          child: Column(
+          child: ListView(
             children: [
-              // Fixed amount display styled like a TextField
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Amount',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    Text(
-                      'GHS $fixedAmount',
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
               TextFormField(
-                controller: referenceController,
+                initialValue: widget.amount,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: 'GHS',
+                  labelStyle: const TextStyle(color: Colors.blue),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
+              ),
+              const SizedBox(height: 15),
+              TextFormField(
+                controller: emailController,
+                focusNode: emailFocusNode,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  labelStyle: const TextStyle(color: Colors.blue),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                style: const TextStyle(fontSize: 16, color: Colors.black),
                 validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Required field missing';
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Email is required';
                   }
                   return null;
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Reference',
-                  hintText: 'Enter the reference',
-                  border: OutlineInputBorder(),
-                ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: TextFormField(
-                  controller: emailController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Required field missing';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    hintText: 'A receipt will be sent to this email',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
+              const SizedBox(height: 20),
+              Center(
                 child: SizedBox(
-                  width: double.infinity,
-                  height: 45,
+                  width: 265,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.blue,
+                      minimumSize: const Size(100, 50),
+                      textStyle: const TextStyle(fontSize: 14),
+                    ),
                     onPressed: () {
-                      if (!_formKey.currentState!.validate()) {
-                        return;
-                      }
+                      if (!_formKey.currentState!.validate()) return;
+
+                      final uniqueReference = generateReference();
+                      final currentUser = FirebaseAuth.instance.currentUser;
+                      final uid = currentUser?.uid ?? 'anonymous'; // ✅ UID
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => PaymentPage(
-                            amount: fixedAmount,
-                            email: emailController.text,
-                            reference: referenceController.text,
-                            title: '', // Title passed, even though not used.
+                            email: emailController.text.trim(),
+                            reference: uniqueReference,
+                            title: widget.title,
+                            uid: uid, // ✅ passed here
                           ),
                         ),
                       );
                     },
                     child: const Text(
-                      'Proceed to make payment',
+                      "Proceed to Payment",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

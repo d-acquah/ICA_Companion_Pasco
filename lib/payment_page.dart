@@ -1,139 +1,190 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:ica_companion_pasco/paystack/paystack_auth_response.dart';
-import 'package:ica_companion_pasco/transaction/transaction.dart';
+import 'package:ica_companion_pasco/pages/bottom_navigation_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
-
 import 'api_key.dart';
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({
-    super.key,
-    required this.amount,
+    Key? key,
     required this.email,
     required this.reference,
-    required String title,
-  });
+    required this.title,
+    required this.uid, // ✅ UID from Firebase
+  }) : super(key: key);
 
-  final String amount;
   final String email;
   final String reference;
+  final String title;
+  final String uid;
 
   @override
-  State<PaymentPage> createState() => _PaymentPage();
+  State<PaymentPage> createState() => _PaymentPageState();
 }
 
-class _PaymentPage extends State<PaymentPage> {
-  final _webViewKey = UniqueKey();
-  late WebViewController _webViewController;
+class _PaymentPageState extends State<PaymentPage> {
+  late final WebViewController _webViewController;
+  String? _authorizationUrl;
+  bool _isVerifying = false;
 
-  Future<PayStackAuthResponse> createTransaction(
-      Transaction transaction) async {
+  Future<Map<String, dynamic>> _buildTransactionPayload() async {
+    const double fixedAmountGhs = 10;
+    final int amountInPesewas = (fixedAmountGhs * 100).toInt();
+    return {
+      "amount": amountInPesewas,
+      "email": widget.email,
+      "reference": widget.reference,
+      "currency": "GHS",
+      "metadata": {
+        "custom_fields": [
+          {
+            "display_name": "User ID",
+            "variable_name": "firebase_uid",
+            "value": widget.uid, // ✅ Included in metadata
+          },
+        ],
+      },
+    };
+  }
+
+  Future<String> _initializeTransaction() async {
+    final payload = await _buildTransactionPayload();
+    debugPrint("Transaction Payload: ${jsonEncode(payload)}");
     const String url = 'https://api.paystack.co/transaction/initialize';
-    final data = transaction.toJson();
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer ${ApiKey.secretKey}',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(data),
-      );
-      if (response.statusCode == 200) {
-        print(response.body);
-        // Payment initialization successful
-        final responseData = jsonDecode(response.body);
-        return PayStackAuthResponse.fromJson(responseData['data']);
-      } else {
-        throw 'Payment unsuccessful';
-      }
-    } on Exception {
-      throw 'Payment Unsuccessful';
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer ${ApiKey.secretKey}',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(payload),
+    );
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      return responseData['data']['authorization_url'];
+    } else {
+      throw 'Payment initialization unsuccessful. Status: ${response.statusCode}\nResponse: ${response.body}';
     }
   }
 
-  Future<bool> verifyTransaction(String reference) async {
-    final String url = 'https://api.paystack.co/transaction/verify/$reference';
-    try {
-      final response = await http.get(Uri.parse(url), headers: {
+  Future<bool> _verifyTransaction() async {
+    final String url =
+        'https://api.paystack.co/transaction/verify/${widget.reference}';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
         'Authorization': 'Bearer ${ApiKey.secretKey}',
-        'Content-Type': 'application/json'
-      });
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        if (responseData['data']['gateway_response'] == 'Approved') {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    } on Exception {
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      return responseData['data']['status'] == 'success';
+    } else {
       return false;
     }
   }
 
-  Future<String> initializeTransaction() async {
-    try {
-      final price = double.parse(widget.amount);
-      final transaction = Transaction(
-        amount: (price * 100).toString(),
-        reference: widget.reference,
-        currency: 'GHS',
-        email: widget.email,
-        callback_url: '',
+  @override
+  void initState() {
+    super.initState();
+    _initializeTransaction().then((url) {
+      setState(() {
+        _authorizationUrl = url;
+      });
+      _webViewController = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onNavigationRequest: (NavigationRequest request) {
+              return NavigationDecision.navigate;
+            },
+            onWebResourceError: (WebResourceError error) {
+              debugPrint("WebResourceError: ${error.description}");
+            },
+          ),
+        )
+        ..loadRequest(Uri.parse(url));
+    }).catchError((e) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const BottomNavigationPage(
+            showPaymentSnackBar: true,
+            paymentSnackBarMessage: "Payment initialization error.",
+          ),
+        ),
       );
-
-      final authResponse = await createTransaction(transaction);
-      return authResponse.authorization_url;
-    } catch (e) {
-      print('Error initializing transaction: $e');
-      return e.toString();
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: FutureBuilder<String>(
-          future: initializeTransaction(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (snapshot.hasData && snapshot.data is String) {
-              final url = snapshot.data!;
-              return WebViewWidget(
-                controller: WebViewController()
-                  ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                  ..setBackgroundColor(const Color(0x00000000))
-                  ..setNavigationDelegate(
-                    NavigationDelegate(
-                      onProgress: (int progress) {
-                        // Update loading bar (if any).
-                      },
-                      onPageStarted: (String url) {},
-                      onPageFinished: (String url) {},
-                      onWebResourceError: (WebResourceError error) {},
-                      onNavigationRequest: (NavigationRequest request) {
-                        if (request.url.startsWith('https://www.youtube.com/')) {
-                          return NavigationDecision.prevent;
-                        }
-                        return NavigationDecision.navigate;
-                      },
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Mobile Money'),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: _authorizationUrl == null
+                    ? const Center(child: CircularProgressIndicator())
+                    : WebViewWidget(controller: _webViewController),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Center(
+                  child: SizedBox(
+                    width: 265,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.blue,
+                        minimumSize: const Size(50, 50),
+                        textStyle: const TextStyle(fontSize: 14),
+                      ),
+                      onPressed: _isVerifying
+                          ? null
+                          : () async {
+                              setState(() {
+                                _isVerifying = true;
+                              });
+                              bool verified = await _verifyTransaction();
+                              setState(() {
+                                _isVerifying = false;
+                              });
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BottomNavigationPage(
+                                    showPaymentSnackBar: true,
+                                    paymentSnackBarMessage: verified
+                                        ? "Payment verified successfully!"
+                                        : "Payment failed or not completed. Please try again.",
+                                  ),
+                                ),
+                              );
+                            },
+                      child: Text(
+                        _isVerifying ? 'Verifying...' : 'Verify Transaction',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  )
-                  ..loadRequest(Uri.parse(url)),
-              );
-            } else {
-               return const Center(child: CircularProgressIndicator());
-            }
-          },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

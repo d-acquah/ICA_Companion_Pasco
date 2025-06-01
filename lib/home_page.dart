@@ -1717,6 +1717,10 @@ class _HomePageState extends State<HomePage> {
           }
         }
         break;
+      case MenuItems.itemSignOut: {
+  await signUserOut(context);
+       }
+       break;
       
     }
   }

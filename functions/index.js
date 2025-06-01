@@ -1,100 +1,81 @@
-const functions = require("firebase-functions"); // Import functions
-const admin = require("firebase-admin"); // Import admin SDK
-const paystackApi = require("paystack-api"); // Import Paystack API
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
 
-admin.initializeApp(); // Initialize admin SDK
+admin.initializeApp();
 
-let paystack;
+exports.paystackWebhook = functions.https.onRequest(async (req, res) => {
+  // Step 1: Only accept POST requests
+  if (req.method !== "POST") {
+    return res.status(405).send("Method Not Allowed");
+  }
 
-// Initialize Paystack dynamically
-function getPaystack() {
-  if (!paystack) {
-    const secretKey = functions.config().paystack.secretkey;
-    if (!secretKey) {
-      throw new Error("Paystack secret key is not defined in Firebase Config.");
+  try {
+    const event = req.body;
+
+    console.log("🔔 Webhook event received:", event.event);
+
+    // Step 2: Handle only successful charge events
+    if (event.event !== "charge.success") {
+      console.log("ℹ️ Not a charge.success event. Skipping.");
+      return res.status(200).send("Event ignored");
     }
-    paystack = paystackApi(secretKey);
-  }
-  return paystack;
-}
 
-const createPlan = async (planDetails) => {
-  try {
-    const paystack = getPaystack();
-    const response = await paystack.plans.create(planDetails);
-    return response.data;
-  } catch (error) {
-    console.error("Error creating plan:", error);
-    throw error;
-  }
-};
+    const data = event.data;
 
-const planDetails = {
-  name: "Monthly Subscription",
-  amount: 1000, // In the lowest unit of currency (e.g., kobo for Naira)
-  interval: "monthly",
-  currency: "GHS",
-};
-
-createPlan(planDetails).then((plan) => {
-  console.log("Plan created successfully:", plan);
-}).catch((error) => {
-  console.error("Failed to create plan:", error);
-});
-
-exports.handleWebhook = functions.https.onRequest(async (req, res) => {
-  const event = req.body.event;
-  try {
-    switch (event) {
-      case "charge.success":
-        await handleChargeSuccess(req.body.data);
-        break;
-      case "subscription.cancelled":
-        await handleSubscriptionCancelled(req.body.data);
-        break;
-      // Handle other events as needed
-      default:
-        console.log("Unhandled event:", event);
+    // Step 3: Extract firebase_uid from custom_fields
+    const customFields = data.metadata?.custom_fields;
+    if (!Array.isArray(customFields)) {
+      console.error("❌ custom_fields is not an array:", customFields);
+      return res.status(400).send("Invalid custom_fields format");
     }
-    res.status(200).send("Event handled");
-  } catch (error) {
-    console.error("Error handling webhook event:", error);
-    res.status(500).send("Error handling event");
-  }
-});
 
-const handleChargeSuccess = async (data) => {
-  const userId = data.customer.id; // Assuming customer ID maps to user ID
-  const expireDate = new Date();
-  expireDate.setMonth(expireDate.getMonth() + 1);
-  // Set expiration date for 1 month later
+    console.log("🧩 Full custom_fields received:", JSON.stringify(customFields, null, 2));
 
-  try {
-    await admin.firestore().collection("users").doc(userId).update({
+    const uidField = customFields.find(
+      field => field.variable_name === "firebase_uid"
+    );
+
+    if (!uidField || !uidField.value) {
+      console.error("❌ Missing UID in webhook payload metadata.");
+      return res.status(400).send("Missing UID");
+    }
+
+    const uid = uidField.value;
+
+    if (!uid || typeof uid !== "string") {
+      console.error("❌ Invalid UID format:", uid);
+      return res.status(400).send("Invalid UID");
+    }
+
+    console.log("✅ UID extracted:", uid);
+    console.log("🧾 About to write to Firestore at: users/" + uid);
+
+    // Step 4: Convert paid_at to Firestore Timestamp
+    const paidAt = admin.firestore.Timestamp.fromDate(new Date(data.paid_at));
+
+    // Step 5: Build subscription object
+    const subscriptionData = {
       subscription: {
-        isActive: true,
-        planId: data.plan,
-        expireDate: expireDate,
-      },
-    });
-    console.log("Subscription updated successfully for user:", userId);
-  } catch (error) {
-    console.error("Error updating subscription for user:", userId, error);
-    throw error;
-  }
-};
+        status: data.status,
+        reference: data.reference,
+        amount: data.amount / 100, // convert from Kobo to GHS
+        currency: data.currency,
+        paid_at: paidAt,
+        payment_channel: data.channel,
+        updated_at: admin.firestore.FieldValue.serverTimestamp()
+      }
+    };
 
-const handleSubscriptionCancelled = async (data) => {
-  const userId = data.customer.id;
-  try {
-    await admin.firestore().collection("users").doc(userId).update({
-      "subscription.isActive": false,
-      "subscription.planId": null,
-      "subscription.expireDate": null,
-    });
-    console.log("Subscription cancelled for user:", userId);
+    // Step 6: Update user's subscription in Firestore
+    await admin.firestore()
+      .collection("users")
+      .doc(uid)
+      .set(subscriptionData, { merge: true });
+
+    console.log(`✅ Subscription updated in Firestore for UID: ${uid}`);
+    return res.status(200).send("Subscription updated");
   } catch (error) {
-    console.error("Error cancelling subscription for user:", userId, error);
-    throw error;
+    console.error("🔥 Error handling webhook:", error);
+    return res.status(500).send("Internal Server Error");
   }
-};
+});

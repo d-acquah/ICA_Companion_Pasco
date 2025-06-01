@@ -6,6 +6,7 @@ class MenuItems {
     itemContactUs,
     itemShare,
     itemRateApp,
+    itemSignOut,
   
  ];
  
@@ -22,6 +23,11 @@ class MenuItems {
   static const itemRateApp = MenuItem(
     text: 'Rate App',
     icon: Icons.star,
+  );
+
+   static const itemSignOut = MenuItem(
+    text: 'Sign Out',
+    icon: Icons.logout,
   );
   
 }

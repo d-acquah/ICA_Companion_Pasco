@@ -520,10 +520,129 @@ class _SubscriptionsState extends State<Subscriptions> {
                                                     fontSize: 14),
                                               ),
                                               onPressed: () async {
-                                                
-                                                iApEngine.handlePurchase(
-                                                    _products[index],
-                                                    _productsIds);
+                                                showModalBottomSheet(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              20.0),
+                                                      height:
+                                                          300, // Increased height to fit two buttons
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            'Payment Options',
+                                                            style: TextStyle(
+                                                                fontSize: 24,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          Text(
+                                                            'Choose a payment method to subscribe.',
+                                                            style: TextStyle(
+                                                                fontSize: 16),
+                                                          ),
+                                                          SizedBox(height: 20),
+                                                          // Button to Proceed to PayStackPage
+                                                          ElevatedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              iApEngine.handlePurchase(
+                                                                  _products[
+                                                                      index],
+                                                                  _productsIds);
+                                                            },
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
+                                                              ),
+                                                              foregroundColor:
+                                                                  Colors.white,
+                                                              backgroundColor:
+                                                                  Colors.blue,
+                                                              minimumSize:
+                                                                  const Size(
+                                                                      40, 40),
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          14),
+                                                            ),
+                                                            child: Text(
+                                                              'Card Payment',
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          // Button to handle card payment
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              // Navigate to the NewPage when the button is pressed
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            AuthPage(
+                                                                              onTap: () {},
+                                                                            )),
+                                                              );
+                                                            },
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
+                                                              ),
+                                                              foregroundColor:
+                                                                  Colors.white,
+                                                              backgroundColor:
+                                                                  Colors.blue,
+                                                              minimumSize:
+                                                                  const Size(
+                                                                      40, 40),
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          14),
+                                                            ),
+                                                            child: Text(
+                                                              'Mobile Money',
+                                                              style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                );
                                               },
                                               child: const Text(
                                                 "Subscribe",
