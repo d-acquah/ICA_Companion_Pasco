@@ -28,25 +28,26 @@ class _PaymentPageState extends State<PaymentPage> {
   String? _authorizationUrl;
   bool _isVerifying = false;
 
-  Future<Map<String, dynamic>> _buildTransactionPayload() async {
-    const double fixedAmountGhs = 10;
-    final int amountInPesewas = (fixedAmountGhs * 100).toInt();
-    return {
-      "amount": amountInPesewas,
-      "email": widget.email,
-      "reference": widget.reference,
-      "currency": "GHS",
-      "metadata": {
-        "custom_fields": [
-          {
-            "display_name": "User ID",
-            "variable_name": "firebase_uid",
-            "value": widget.uid, // ✅ Included in metadata
-          },
-        ],
-      },
-    };
-  }
+ Future<Map<String, dynamic>> _buildTransactionPayload() async {
+  const double fixedAmountGhs = 10;
+  final int amountInPesewas = (fixedAmountGhs * 100).toInt();
+  return {
+    "amount": amountInPesewas,
+    "email": widget.email,
+    "reference": widget.reference,
+    "currency": "GHS",
+    "metadata": {
+      "custom_fields": [
+        {
+          "display_name": "Firebase UID",
+          "variable_name": "firebase_uid",
+          "value": widget.uid,
+        },
+      ],
+    },
+  };
+}
+
 
   Future<String> _initializeTransaction() async {
     final payload = await _buildTransactionPayload();

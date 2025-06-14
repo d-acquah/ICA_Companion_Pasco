@@ -1,0 +1,38 @@
+[
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\flutter_paystack\\intermediates\\merged_res\\release\\drawable-v21\\mtrl_navigation_bar_item_background.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\35e20bf74512ad8f4791126e388a1ab4\\transformed\\material-1.7.0\\res\\drawable-v21\\mtrl_navigation_bar_item_background.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\flutter_paystack\\intermediates\\merged_res\\release\\drawable-v21\\abc_dialog_material_background.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\1fb2fc364e992d9a0a3506351e35011a\\transformed\\appcompat-1.5.0\\res\\drawable-v21\\abc_dialog_material_background.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\flutter_paystack\\intermediates\\merged_res\\release\\drawable-v21\\material_cursor_drawable.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\35e20bf74512ad8f4791126e388a1ab4\\transformed\\material-1.7.0\\res\\drawable-v21\\material_cursor_drawable.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\flutter_paystack\\intermediates\\merged_res\\release\\drawable-v21\\abc_edit_text_material.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\1fb2fc364e992d9a0a3506351e35011a\\transformed\\appcompat-1.5.0\\res\\drawable-v21\\abc_edit_text_material.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\flutter_paystack\\intermediates\\merged_res\\release\\drawable-v21\\notification_action_background.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\abcd449085051ea3593b01b21cf4a839\\transformed\\core-1.8.0\\res\\drawable-v21\\notification_action_background.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\flutter_paystack\\intermediates\\merged_res\\release\\drawable-v21\\abc_btn_colored_material.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\1fb2fc364e992d9a0a3506351e35011a\\transformed\\appcompat-1.5.0\\res\\drawable-v21\\abc_btn_colored_material.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\flutter_paystack\\intermediates\\merged_res\\release\\drawable-v21\\abc_action_bar_item_background_material.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\1fb2fc364e992d9a0a3506351e35011a\\transformed\\appcompat-1.5.0\\res\\drawable-v21\\abc_action_bar_item_background_material.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\flutter_paystack\\intermediates\\merged_res\\release\\drawable-v21\\m3_tabs_background.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\35e20bf74512ad8f4791126e388a1ab4\\transformed\\material-1.7.0\\res\\drawable-v21\\m3_tabs_background.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\flutter_paystack\\intermediates\\merged_res\\release\\drawable-v21\\abc_list_divider_material.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\1fb2fc364e992d9a0a3506351e35011a\\transformed\\appcompat-1.5.0\\res\\drawable-v21\\abc_list_divider_material.xml"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\firebase_core\\intermediates\\merged_res\\release\\layout\\notification_action_tombstone.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\layout\\notification_action_tombstone.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\firebase_core\\intermediates\\merged_res\\release\\layout\\notification_template_part_chronometer.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\layout\\notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\firebase_core\\intermediates\\merged_res\\release\\layout\\notification_action.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\layout\\notification_action.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\firebase_core\\intermediates\\merged_res\\release\\layout\\custom_dialog.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\layout\\custom_dialog.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\firebase_core\\intermediates\\merged_res\\release\\layout\\notification_template_icon_group.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\layout\\notification_template_icon_group.xml"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\firebase_core\\intermediates\\merged_res\\release\\layout\\notification_template_part_time.xml",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\layout\\notification_template_part_time.xml"
+    }
+]

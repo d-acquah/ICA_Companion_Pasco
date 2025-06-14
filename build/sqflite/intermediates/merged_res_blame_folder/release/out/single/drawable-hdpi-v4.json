@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\sqflite\\intermediates\\merged_res\\release\\drawable-hdpi-v4\\notify_panel_notification_icon_bg.png",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\drawable-hdpi-v4\\notify_panel_notification_icon_bg.png"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\sqflite\\intermediates\\merged_res\\release\\drawable-hdpi-v4\\notification_bg_low_normal.9.png",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\drawable-hdpi-v4\\notification_bg_low_normal.9.png"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\sqflite\\intermediates\\merged_res\\release\\drawable-hdpi-v4\\notification_bg_low_pressed.9.png",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\drawable-hdpi-v4\\notification_bg_low_pressed.9.png"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\sqflite\\intermediates\\merged_res\\release\\drawable-hdpi-v4\\notification_bg_normal_pressed.9.png",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\drawable-hdpi-v4\\notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "C:\\Flutter\\ica_companion_pasco\\build\\sqflite\\intermediates\\merged_res\\release\\drawable-hdpi-v4\\notification_bg_normal.9.png",
+        "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\drawable-hdpi-v4\\notification_bg_normal.9.png"
+    }
+]

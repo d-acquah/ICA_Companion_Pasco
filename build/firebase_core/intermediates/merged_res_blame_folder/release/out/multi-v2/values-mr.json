@@ -1,0 +1,82 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Flutter\\ica_companion_pasco\\build\\firebase_core\\intermediates\\merged_res\\release\\values-mr\\values-mr.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\values-mr\\values-mr.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "198",
+                        "endColumns": "100",
+                        "endOffsets": "294"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\ba09193947f07a5ca110b6f3659ed754\\transformed\\jetified-play-services-basement-18.1.0\\res\\values-mr\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "195",
+                        "endColumns": "138",
+                        "endOffsets": "333"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "142",
+                        "endOffsets": "193"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "C:\\Flutter\\ica_companion_pasco\\build\\firebase_core\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-mr\\values-mr.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\0cc2f752a67bbd11e64e04e5b5b1d0f5\\transformed\\core-1.6.0\\res\\values-mr\\values-mr.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "198",
+                        "endColumns": "100",
+                        "endOffsets": "294"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\ba09193947f07a5ca110b6f3659ed754\\transformed\\jetified-play-services-basement-18.1.0\\res\\values-mr\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "195",
+                        "endColumns": "138",
+                        "endOffsets": "333"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "142",
+                        "endOffsets": "193"
+                    }
+                }
+            ]
+        }
+    ]
+}
