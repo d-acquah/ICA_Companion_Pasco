@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Flutter\\ica_companion_pasco\\build\\app\\intermediates\\incremental\\mergeReleaseResources\\merged.dir\\values-w600dp-land-v13\\values-w600dp-land-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\danoa\\.gradle\\caches\\transforms-3\\35e20bf74512ad8f4791126e388a1ab4\\transformed\\material-1.7.0\\res\\values-w600dp-land-v13\\values-w600dp-land-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "54",
+                        "endOffsets": "105"
+                    }
+                }
+            ]
+        }
+    ]
+}
