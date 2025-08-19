@@ -11,7 +11,7 @@ class PaymentPage extends StatefulWidget {
     required this.email,
     required this.reference,
     required this.title,
-    required this.uid, // ✅ UID from Firebase
+    required this.uid, // ✅ Firebase UID passed here
   }) : super(key: key);
 
   final String email;
@@ -28,30 +28,35 @@ class _PaymentPageState extends State<PaymentPage> {
   String? _authorizationUrl;
   bool _isVerifying = false;
 
- Future<Map<String, dynamic>> _buildTransactionPayload() async {
-  const double fixedAmountGhs = 10;
-  final int amountInPesewas = (fixedAmountGhs * 100).toInt();
-  return {
-    "amount": amountInPesewas,
-    "email": widget.email,
-    "reference": widget.reference,
-    "currency": "GHS",
-    "metadata": {
-      "custom_fields": [
-        {
-          "display_name": "Firebase UID",
-          "variable_name": "firebase_uid",
-          "value": widget.uid,
-        },
-      ],
-    },
-  };
-}
-
+  Future<Map<String, dynamic>> _buildTransactionPayload() async {
+    const double fixedAmountGhs = 10;
+    final int amountInPesewas = (fixedAmountGhs * 100).toInt();
+    return {
+      "amount": amountInPesewas,
+      "email": widget.email,
+      "reference": widget.reference,
+      "currency": "GHS",
+      "metadata": {
+        "custom_fields": [
+          {
+            "display_name": "Firebase UID",
+            "variable_name": "firebase_uid",
+            "value": widget.uid,
+          },
+          {
+            "display_name": "Payment Platform",
+            "variable_name": "platform",
+            "value": "Flutter App",
+          }
+        ],
+      }
+    };
+  }
 
   Future<String> _initializeTransaction() async {
     final payload = await _buildTransactionPayload();
-    debugPrint("Transaction Payload: ${jsonEncode(payload)}");
+    debugPrint("📦 Transaction Payload: ${jsonEncode(payload)}");
+
     const String url = 'https://api.paystack.co/transaction/initialize';
     final response = await http.post(
       Uri.parse(url),
@@ -61,11 +66,12 @@ class _PaymentPageState extends State<PaymentPage> {
       },
       body: jsonEncode(payload),
     );
+
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
       return responseData['data']['authorization_url'];
     } else {
-      throw 'Payment initialization unsuccessful. Status: ${response.statusCode}\nResponse: ${response.body}';
+      throw '❌ Payment initialization failed.\nStatus: ${response.statusCode}\nResponse: ${response.body}';
     }
   }
 
@@ -79,10 +85,13 @@ class _PaymentPageState extends State<PaymentPage> {
         'Content-Type': 'application/json',
       },
     );
+
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
+      debugPrint("✅ Verification Response: $responseData");
       return responseData['data']['status'] == 'success';
     } else {
+      debugPrint("❌ Verification failed: ${response.body}");
       return false;
     }
   }
@@ -102,12 +111,13 @@ class _PaymentPageState extends State<PaymentPage> {
               return NavigationDecision.navigate;
             },
             onWebResourceError: (WebResourceError error) {
-              debugPrint("WebResourceError: ${error.description}");
+              debugPrint("⚠️ WebView error: ${error.description}");
             },
           ),
         )
         ..loadRequest(Uri.parse(url));
     }).catchError((e) {
+      debugPrint("🔥 Transaction init error: $e");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -159,10 +169,13 @@ class _PaymentPageState extends State<PaymentPage> {
                               setState(() {
                                 _isVerifying = true;
                               });
+
                               bool verified = await _verifyTransaction();
+
                               setState(() {
                                 _isVerifying = false;
                               });
+
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -178,7 +191,9 @@ class _PaymentPageState extends State<PaymentPage> {
                       child: Text(
                         _isVerifying ? 'Verifying...' : 'Verify Transaction',
                         style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

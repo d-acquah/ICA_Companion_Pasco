@@ -5,14 +5,17 @@ gradle-wrapper.jar
 /gradlew.bat
 /local.properties
 GeneratedPluginRegistrant.java
+# Flutter/Dart
 build/
 .dart_tool/
-.idea/
+.packages
+.pub-cache/
 *.apk
 *.aab
 *.zip
 *.dill
 *.so
+
 
 
 # Remember to never publicly share your keystore.

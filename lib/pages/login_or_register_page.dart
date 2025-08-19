@@ -2,36 +2,26 @@ import "package:flutter/material.dart";
 import "package:ica_companion_pasco/pages/login_page.dart";
 import "package:ica_companion_pasco/pages/register_page.dart";
 
-class LoginOrRegisterPage extends StatefulWidget {
-  const LoginOrRegisterPage({super.key});
 
+class Authenticate extends StatefulWidget {
   @override
-  State<LoginOrRegisterPage> createState() => _LoginOrRegisterPageState();
+  _AuthenticateState createState() => _AuthenticateState();
 }
 
-class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
-// initially show login page
-  bool showLoginPage = true;
+class _AuthenticateState extends State<Authenticate> {
 
-  // toogle between login and register page
-  void togglePages() {
-    setState(() {
-      showLoginPage = !showLoginPage;
-    });
+  bool showSignIn = true;
+  void toggleView(){
+    //print(showSignIn.toString());
+    setState(() => showSignIn = !showSignIn);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (showLoginPage) {
-      return LoginPage(
-        onTap: togglePages,
-        );
-    } else{
-      return RegisterPage(
-        onTap: togglePages,
-      );
-
+    if (showSignIn) {
+      return SignIn(toggleView:  toggleView);
+    } else {
+      return Register(toggleView:  toggleView);
     }
-    
   }
 }

@@ -48,7 +48,8 @@ class _PdfListScreenState extends State<PdfListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(toolbarHeight:65,
+      appBar: AppBar(
+        toolbarHeight: 65,
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text(
@@ -77,8 +78,10 @@ class _PdfListScreenState extends State<PdfListScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      PdfViewerScreen(pdfDocument: pdfDocument),
+                  builder: (context) => PdfViewerScreen(
+                    filePath: pdfDocument.localPath,
+                    title: pdfDocument.title,
+                  ),
                 ),
               );
             },

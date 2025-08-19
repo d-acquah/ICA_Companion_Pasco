@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
@@ -8,6 +7,8 @@ import 'package:onepref/onepref.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class PDFViewer extends StatefulWidget {
   final MonthYear monthYear;
@@ -22,15 +23,16 @@ class _PDFViewerState extends State<PDFViewer> {
   IApEngine iApEngine = IApEngine();
   bool isLoading = false;
   bool _isLoaded = true;
+  late InterstitialAd? _interstitialAd;
+  bool _interstitialShown = false;
+
   final BannerAd myBanner = BannerAd(
     size: AdSize.banner,
     adUnitId: Platform.isAndroid
         ? "ca-app-pub-2530239307985191/4923044950"
         : "ca-app-pub-2530239307985191/4273991819",
     listener: BannerAdListener(
-      onAdLoaded: (Ad ad) {
-        print('$BannerAd loaded.');
-      },
+      onAdLoaded: (Ad ad) => print('$BannerAd loaded.'),
       onAdFailedToLoad: (Ad ad, LoadAdError error) {
         ad.dispose();
         print('$BannerAd failedToLoad: $error');
@@ -44,6 +46,9 @@ class _PDFViewerState extends State<PDFViewer> {
     super.initState();
     myBanner.load();
     restoreSub();
+    validatePremiumFromDatabase();
+    _loadInterstitialAd();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -53,25 +58,73 @@ class _PDFViewerState extends State<PDFViewer> {
         ),
       );
     });
+
     iApEngine.inAppPurchase.purchaseStream.listen((list) {
-      if (list.isNotEmpty) {
-         OnePref.setPremium(true);
-        //restore the subscription
-      } else {
-        //do nothing or deactivate the subscription if the user is premium
-        OnePref.setPremium(false);
-      }
+      OnePref.setPremium(list.isNotEmpty);
     });
+  }
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: Platform.isAndroid
+          ? "ca-app-pub-2530239307985191/4612100836"
+          : "ca-app-pub-2530239307985191/5454409211",
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+          if (!_interstitialShown && OnePref.getPremium() == false) {
+            _interstitialAd!.show();
+            _interstitialShown = true;
+          }
+        },
+        onAdFailedToLoad: (err) => debugPrint('Ad failed to load: ${err.message}'),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _interstitialAd?.dispose();
+    super.dispose();
+  }
+
+  Future<void> validatePremiumFromDatabase() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final DatabaseReference ref =
+            FirebaseDatabase.instance.ref().child('users/${user.uid}');
+        final DataSnapshot snapshot = await ref.get();
+
+        if (snapshot.exists) {
+          final data = Map<String, dynamic>.from(snapshot.value as Map);
+          final isPremium = data['isPremium'] == true;
+          final subscriptionEnd = data['subscriptionEnd'] ?? 0;
+          final now = DateTime.now().millisecondsSinceEpoch;
+
+          if (isPremium && now < subscriptionEnd) {
+            await OnePref.setPremium(true);
+            print("✅ Premium user with valid subscription");
+          } else {
+            await OnePref.setPremium(false);
+            print("⚠️ Subscription expired or user is not premium");
+          }
+        }
+      }
+    } catch (e) {
+      print('Error checking premium status from database: $e');
+      OnePref.setPremium(false);
+    }
+    setState(() {}); // Rebuild UI
   }
 
   Future<void> _downloadAndSavePdf() async {
     try {
-      // Replace the URL with the actual PDF URL
       final url = widget.monthYear.link;
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        // Extract file name from the URL and capitalize the first letter of each word
         final uri = Uri.parse(url);
         final fileName = capitalizeWords(uri.pathSegments.last);
 
@@ -80,15 +133,11 @@ class _PDFViewerState extends State<PDFViewer> {
         File file = File(filePath);
         await file.writeAsBytes(response.bodyBytes);
 
-        // Navigate to PdfListScreen after successful download
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => PdfListScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => PdfListScreen()),
         );
       } else {
-        // Show a snackbar for download failure
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to download PDF'),
@@ -97,7 +146,6 @@ class _PDFViewerState extends State<PDFViewer> {
         );
       }
     } catch (e) {
-      // Show a snackbar for unexpected errors
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('An error occurred: $e'),
@@ -111,7 +159,7 @@ class _PDFViewerState extends State<PDFViewer> {
     final words = input.split('_');
     for (int i = 0; i < words.length; i++) {
       if (i > 0 && (words[i] == 'to' || words[i] == 'of')) {
-        // Do not capitalize 'to' and 'of'
+        continue;
       } else {
         words[i] = capitalizeFirstLetter(words[i]);
       }
@@ -125,103 +173,78 @@ class _PDFViewerState extends State<PDFViewer> {
 
   @override
   Widget build(BuildContext context) {
-    InterstitialAd.load(
-        adUnitId: Platform.isAndroid
-            ? "ca-app-pub-2530239307985191/4612100836"
-            : "ca-app-pub-2530239307985191/5454409211",
-        request: const AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(onAdLoaded: (ad) {
-          if (_isLoaded && OnePref.getPremium() == false) {
-            ad.show();
-          }
-        }, onAdFailedToLoad: (err) {
-          debugPrint(err.message);
-
-          // ignore: dead_code
-          // Navigator.push(context,MaterialPageRoute(builder: (context){
-          //                return NextPage();
-        }));
     return SafeArea(
-  child: Scaffold(
-    appBar: AppBar(toolbarHeight:65,
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      title: Text(
-        widget.monthYear.name,
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 65,
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          title: Text(
+            widget.monthYear.name,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.blue,
+          actions: [
+            IconButton(
+              onPressed: () async {
+                if (_isLoaded && OnePref.getPremium() == true) {
+                  try {
+                    setState(() => isLoading = true);
+                    await _downloadAndSavePdf();
+                  } catch (error) {
+                    print("Error during download: $error");
+                  } finally {
+                    setState(() => isLoading = false);
+                  }
+                } else {
+                  showPersistentDialog(
+                    context,
+                    "The download feature is available to premium users only. Subscribe to the premium version to get access to download and view past questions offline.",
+                  );
+                }
+              },
+              icon: const Icon(Icons.download),
+              color: Colors.white,
+            ),
+          ],
+        ),
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : SfPdfViewer.network(widget.monthYear.link),
+        bottomNavigationBar: Visibility(
+          visible: _isLoaded && OnePref.getPremium() == false,
+          child: _isLoaded
+              ? Container(
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width,
+                  height: myBanner.size.height.toDouble(),
+                  child: AdWidget(ad: myBanner),
+                )
+              : Container(),
         ),
       ),
-      elevation: 0,
-      backgroundColor: Colors.blue,
-      actions: [ 
-        IconButton(
-          onPressed: () async {
-            // Check the condition before deciding the action
-            if (_isLoaded && OnePref.getPremium() == true) {
-              try {
-                setState(() {
-                  isLoading = true; // Set loading to true when starting the download
-                });
-
-                await _downloadAndSavePdf();
-
-                // Additional actions after successful download can be added here
-              } catch (error) {
-                print("Error during download: $error");
-                // Handle download error if needed
-              } finally {
-                setState(() {
-                  isLoading = false; // Set loading back to false when download is complete (whether success or failure)
-                });
-              }
-            } else {
-              showPersistentDialog(
-                context,
-                "The download feature is available to premium users only. Subscribe to the premium version to get access to download and view past questions offline.",
-              );
-            }
-          },
-          icon: const Icon(Icons.download),
-          color: Colors.white,
-        ),
-      ],
-    ),
-    body: isLoading
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        : SfPdfViewer.network(widget.monthYear.link),
-    bottomNavigationBar: Visibility(
-      visible: _isLoaded && OnePref.getPremium() == false,
-      child: _isLoaded
-          ? Container(
-              alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width,
-              height: myBanner.size.height.toDouble(),
-              child: AdWidget(ad: myBanner),
-            )
-          : Container(),
-    ),
-  ),
-);
-
+    );
   }
-  
+
   void showPersistentDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.blue, // Set background color
+          backgroundColor: Colors.blue,
           title: Text(
-            'Download Feature', textAlign: TextAlign.center,
+            'Download Feature',
+            textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white, fontSize: 24,
-              fontWeight: FontWeight.w600, // Set font weight
-            ), // Set title text color
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           content: SingleChildScrollView(
             child: Text(
@@ -230,19 +253,18 @@ class _PDFViewerState extends State<PDFViewer> {
                 color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.w400,
-              ), // Set content text color
+              ),
             ),
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'OK',
                 style: TextStyle(
-                  color: Colors.white, fontSize: 20,
-                  fontWeight: FontWeight.w600, // Set font weight
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -251,7 +273,8 @@ class _PDFViewerState extends State<PDFViewer> {
       },
     );
   }
-  void restoreSub()  {
+
+  void restoreSub() {
     iApEngine.inAppPurchase.restorePurchases();
   }
 }

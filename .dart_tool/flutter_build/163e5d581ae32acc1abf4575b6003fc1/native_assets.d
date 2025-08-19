@@ -1,0 +1,1 @@
+ C:\\Flutter\\ica_companion_pasco\\.dart_tool\\flutter_build\\163e5d581ae32acc1abf4575b6003fc1\\native_assets.yaml: 

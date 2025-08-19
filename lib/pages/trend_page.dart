@@ -1,11 +1,8 @@
 // // @dart=2.9
 //import 'package:ica_companion_pasco/home_year_page.dart';
 // import 'package:ica_companion_pasco/pasco_model.dart';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
 import 'package:ica_companion_pasco/trend_topics_page.dart';
 import 'package:onepref/onepref.dart';
@@ -19,19 +16,10 @@ class TrendPage extends StatefulWidget {
 
 class _TrendPageState extends State<TrendPage> {
   IApEngine iApEngine = IApEngine();
-  bool _isLoaded = true;
-  final BannerAd myBanner = BannerAd(
-      size: AdSize.banner,
-      adUnitId: Platform.isAndroid
-          ? "ca-app-pub-2530239307985191/49230449501"
-          : "ca-app-pub-2530239307985191/4273991819",
-      listener: BannerAdListener(),
-      request: AdRequest());
 
   @override
   void initState() {
     super.initState();
-    myBanner.load();
     restoreSub();
 
      iApEngine.inAppPurchase.purchaseStream.listen((list) {
@@ -538,18 +526,6 @@ class _TrendPageState extends State<TrendPage> {
                 ListTile()
               ],
             ),
-            Visibility(
-            visible: _isLoaded && OnePref.getPremium() == false,
-            child: Align(
-                alignment: Alignment.bottomCenter,
-                child: _isLoaded
-                      ? Container(
-                  height: 50,
-                  child: AdWidget(ad: myBanner),
-                )
-                    : Container(),
-          ),
-        ),
           ],
         ),
       ),

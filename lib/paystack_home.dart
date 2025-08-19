@@ -54,6 +54,7 @@ class _PayStackPageState extends State<PayStackPage> {
       appBar: AppBar(
         title: const Text('Mobile Money'),
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),

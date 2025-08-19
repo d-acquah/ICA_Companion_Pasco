@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/data/menu_items.dart';
@@ -9,6 +10,7 @@ import 'package:ica_companion_pasco/home_year_page.dart';
 import 'package:flutter/material.dart';
 import 'package:ica_companion_pasco/models/menu_item.dart';
 import 'package:ica_companion_pasco/models/pasco_model.dart';
+import 'package:ica_companion_pasco/pages/auth_page.dart';
 import 'package:onepref/onepref.dart';
 //import 'package:ica_companion_pasco/pages/next_page.dart';
 import 'package:share_plus/share_plus.dart';
@@ -88,6 +90,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     myBanner.load();
     restoreSub();
+    validatePremiumFromDatabase();
 
     // Check subscription status on app start
     isSubscriptionValid().then((valid) {
@@ -107,6 +110,37 @@ class _HomePageState extends State<HomePage> {
         OnePref.setPremium(false);
       }
     });
+  }
+
+   // Update premium status based on Firebase Realtime Database
+  Future<void> validatePremiumFromDatabase() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final DatabaseReference ref =
+            FirebaseDatabase.instance.ref().child('users/${user.uid}');
+        final DataSnapshot snapshot = await ref.get();
+
+        if (snapshot.exists) {
+          final data = Map<String, dynamic>.from(snapshot.value as Map);
+          final isPremium = data['isPremium'] == true;
+          final subscriptionEnd = data['subscriptionEnd'] ?? 0;
+          final now = DateTime.now().millisecondsSinceEpoch;
+
+          if (isPremium && now < subscriptionEnd) {
+            await OnePref.setPremium(true);
+            print("✅ Premium user with valid subscription");
+          } else {
+            await OnePref.setPremium(false);
+            print("⚠️ Subscription expired or user is not premium");
+          }
+        }
+      }
+    } catch (e) {
+      print('Error checking premium status from database: $e');
+      OnePref.setPremium(false);
+    }
+    setState(() {}); // Rebuild UI after premium status check
   }
 
   @override
@@ -588,6 +622,10 @@ class _HomePageState extends State<HomePage> {
                           name: "Financial Reporting",
                           monthYear: [
                             MonthYear(
+                                name: "2.1 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_2.1_financial_reporting.pdf"),
+                            MonthYear(
                                 name: "2.1 Nov 2024",
                                 link:
                                     "https://mypascoblog.wordpress.com/wp-content/uploads/2025/02/nov-2024_2.1_financial_reporting.pdf"),
@@ -700,6 +738,10 @@ class _HomePageState extends State<HomePage> {
                         homeYear: HomeYear(
                           name: "Management Accounting",
                           monthYear: [
+                            MonthYear(
+                                name: "2.2 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_2.2_management_accounting.pdf"),
                             MonthYear(
                                 name: "2.2 Nov 2024",
                                 link:
@@ -814,6 +856,10 @@ class _HomePageState extends State<HomePage> {
                           name: "Audit & Assurance",
                           monthYear: [
                             MonthYear(
+                                name: "2.3 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_2.3_audit_assurance.pdf"),
+                            MonthYear(
                                 name: "2.3 Nov 2024",
                                 link:
                                     "https://mypascoblog.wordpress.com/wp-content/uploads/2025/02/nov-2024_2.3_audit_assurance.pdf"),
@@ -926,6 +972,10 @@ class _HomePageState extends State<HomePage> {
                         homeYear: HomeYear(
                           name: "Financial Management",
                           monthYear: [
+                            MonthYear(
+                                name: "2.4 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_2.4_financial_management.pdf"),
                              MonthYear(
                                 name: "2.4 Nov 2024",
                                 link:
@@ -1040,6 +1090,10 @@ class _HomePageState extends State<HomePage> {
                           name: "Public Sector Accounting & Finance",
                           monthYear: [
                             MonthYear(
+                                name: "2.5 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_2.5_public_sector_accounting.pdf"),
+                            MonthYear(
                                 name: "2.5 Nov 2024",
                                 link:
                                     "https://mypascoblog.wordpress.com/wp-content/uploads/2025/02/nov-2024_2.5_public_sector_accounting.pdf"),
@@ -1153,6 +1207,10 @@ class _HomePageState extends State<HomePage> {
                           name: "Principles of Taxation",
                           monthYear: [
                             MonthYear(
+                                name: "2.6 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_2.6_principles_of_taxation.pdf"),
+                            MonthYear(
                                 name: "2.6 Nov 2024",
                                 link:
                                     "https://mypascoblog.wordpress.com/wp-content/uploads/2025/02/nov-2024_2.6_principles_of_taxation.pdf"),
@@ -1243,6 +1301,10 @@ class _HomePageState extends State<HomePage> {
                         homeYear: HomeYear(
                           name: "Corporate Reporting",
                           monthYear: [
+                            MonthYear(
+                                name: "3.1 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_3.1_corporate_reporting.pdf"),
                              MonthYear(
                                 name: "3.1 Nov 2024",
                                 link:
@@ -1357,6 +1419,10 @@ class _HomePageState extends State<HomePage> {
                           name: "Advanced Audit & Assurance",
                           monthYear: [
                             MonthYear(
+                                name: "3.2 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_3.2_advanced_audit_assurance.pdf"),
+                            MonthYear(
                                 name: "3.2 Nov 2024",
                                 link:
                                     "https://mypascoblog.wordpress.com/wp-content/uploads/2025/02/nov-2024_3.2_advanced_audit_assurance.pdf"),
@@ -1470,6 +1536,10 @@ class _HomePageState extends State<HomePage> {
                           name: "Advanced Taxation",
                           monthYear: [
                             MonthYear(
+                                name: "3.3 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_3.3_advanced_taxation.pdf"),
+                            MonthYear(
                                 name: "3.3 Nov 2024",
                                 link:
                                     "https://mypascoblog.wordpress.com/wp-content/uploads/2025/02/nov-2024_3.3_advanced_taxation.pdf"),
@@ -1582,6 +1652,10 @@ class _HomePageState extends State<HomePage> {
                         homeYear: HomeYear(
                           name: "Strategic Case Study",
                           monthYear: [
+                            MonthYear(
+                                name: "3.4 Mar 2025",
+                                link:
+                                    "https://mypascoblog.wordpress.com/wp-content/uploads/2025/07/mar-2025_3.4_strategic_case_study.pdf"),
                             MonthYear(
                                 name: "3.4 Nov 2024",
                                 link:
@@ -1729,9 +1803,17 @@ class _HomePageState extends State<HomePage> {
 Future<void> signUserOut(BuildContext context) async {
   try {
     await FirebaseAuth.instance.signOut();
+
+    // ✅ Navigate to AuthPage after successful sign-out
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AuthPage(onTap: () {}),
+      ),
+    );
   } catch (e) {
     print('Error signing out: $e');
-    // Optionally show an error message if sign-out fails
+    // ❌ Show snackbar on failure
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
@@ -1743,6 +1825,8 @@ Future<void> signUserOut(BuildContext context) async {
     );
   }
 }
+
+
 
 
 

@@ -1,41 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:ica_companion_pasco/models/PdfDocument.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'dart:io';
 
 class PdfViewerScreen extends StatelessWidget {
-  final PdfDocument pdfDocument;
-  PdfViewerScreen({required this.pdfDocument});
+  final String filePath;
+  final String title;
+
+  PdfViewerScreen({required this.filePath, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(toolbarHeight:65,
+      appBar: AppBar(
+        toolbarHeight: 65,
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text(
-          pdfDocument.title,
+          title,
           style: TextStyle(
               fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
         ),
         elevation: 0,
         backgroundColor: Colors.blue,
       ),
-      body: PDFView(
-        filePath: pdfDocument.localPath,
-        enableSwipe: true,
-        swipeHorizontal: false,
-        autoSpacing: false,
-        pageSnap: true,
-        pageFling: false,
-        onRender: (pages) {
-          // PDF document is rendered successfully
-          print("Pages: $pages");
-        },
-        onError: (error) {
-          // Handle any errors during PDF loading
-          print("Error: $error");
-        },
-      ),
+      body: SfPdfViewer.file(File(filePath)),
     );
   }
 }

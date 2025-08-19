@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 
-class Constants {
-  static String rewardKey = "reward";
+const textInputDecoration = InputDecoration(
+  fillColor: Colors.white,
+  filled: true,
+  contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.blue, width: 1.0),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+  ),
+);
 
-  //static final List<ProductId> storeProductIds = <ProductId>[
-   // ProductId(id: "test_coins_111", isConsumable: true, reward: 10),
-  //ProductId(id: "test_coins_201", isConsumable: true, reward: 20),
-  //ProductId(id: "test_coins_30", isConsumable: true, reward: 30),
-  //];
-
-  static List<String> benefits = [
-    "Enjoy ICA Companion without Ads",
-    "Unlock the download feature",
-  ];
-
-  static List<String> benefitRemoveAd = ["Remove Ads"];
-
-  static const String appName = "ICA Companion : Pasco";
-  static Color txtColor = Colors.brown.shade800;
-}
