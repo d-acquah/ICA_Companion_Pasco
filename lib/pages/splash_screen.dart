@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter/material.dart';
 import 'package:ica_companion_pasco/models/AppOpenAdManager.dart';
 import 'package:ica_companion_pasco/pages/bottom_navigation_page.dart';
 import 'package:onepref/onepref.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -15,19 +14,15 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
- 
   AppOpenAdManager appOpenAdManager = AppOpenAdManager();
   IApEngine iApEngine = IApEngine();
   bool _isLoaded = true;
-  
+
   @override
   void initState() {
     super.initState();
     restoreSub();
-    validatePremiumFromDatabase();
     // Check subscription status on app start
-    
-
 
     iApEngine.inAppPurchase.purchaseStream.listen((list) {
       if (list.isNotEmpty) {
@@ -54,7 +49,6 @@ class _SplashScreenState extends State<SplashScreen> {
         //After 8 second it will go to HomePage
         appOpenAdManager.showAdIfAvailable();
       }
-
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -87,35 +81,5 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void restoreSub() {
     iApEngine.inAppPurchase.restorePurchases();
-  }
-  
-  Future<void> validatePremiumFromDatabase() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final DatabaseReference ref =
-            FirebaseDatabase.instance.ref().child('users/${user.uid}');
-        final DataSnapshot snapshot = await ref.get();
-
-        if (snapshot.exists) {
-          final data = Map<String, dynamic>.from(snapshot.value as Map);
-          final isPremium = data['isPremium'] == true;
-          final subscriptionEnd = data['subscriptionEnd'] ?? 0;
-          final now = DateTime.now().millisecondsSinceEpoch;
-
-          if (isPremium && now < subscriptionEnd) {
-            await OnePref.setPremium(true);
-            print("✅ Premium user with valid subscription");
-          } else {
-            await OnePref.setPremium(false);
-            print("⚠️ Subscription expired or user is not premium");
-          }
-        }
-      }
-    } catch (e) {
-      print('Error checking premium status from database: $e');
-      OnePref.setPremium(false);
-    }
-    setState(() {}); // Rebuild UI
   }
 }

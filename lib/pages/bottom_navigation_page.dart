@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/home_page.dart';
 import 'package:ica_companion_pasco/models/AppOpenAdManager.dart';
 import 'package:ica_companion_pasco/models/PdfDocument.dart';
@@ -18,14 +17,7 @@ import 'package:onepref/onepref.dart';
 import 'package:path_provider/path_provider.dart';
 
 class BottomNavigationPage extends StatefulWidget {
-  final bool showPaymentSnackBar;
-  final String? paymentSnackBarMessage;
-
-  const BottomNavigationPage({
-    Key? key,
-    this.showPaymentSnackBar = false,
-    this.paymentSnackBarMessage,
-  }) : super(key: key);
+  const BottomNavigationPage({Key? key}) : super(key: key);
 
   @override
   State<BottomNavigationPage> createState() => _BottomNavigationPageState();
@@ -33,289 +25,372 @@ class BottomNavigationPage extends StatefulWidget {
 
 class _BottomNavigationPageState extends State<BottomNavigationPage>
     with WidgetsBindingObserver {
-  final AppOpenAdManager appOpenAdManager = AppOpenAdManager();
-  final List<Widget> screens = [
+  List<PdfDocument> pdfDocuments = [];
+  AppOpenAdManager appOpenAdManager = AppOpenAdManager();
+  bool premiumPageVisible = false;
+  bool isPaused = false;
+  IApEngine iApEngine = IApEngine();
+  bool _isLoaded = true;
+  int currentIndex = 0;
+  InterstitialAd? interstitialAd;
+  final screens = [
     HomePage(),
     TrendPage(),
     TopicsPage(),
-    const Subscriptions(),
+    Subscriptions(),
     PdfListScreen(),
     PremiumPage(),
+    
   ];
-
-  int currentIndex = 0;
-  bool isPaused = false;
-  bool _isLoaded = false;
-  bool isPremiumUserFirestore = false;
-  bool isPremiumUserRealtime = false;
-  List<PdfDocument> pdfDocuments = [];
-
   @override
   void initState() {
+    //implement initState
     super.initState();
+    premiumPageVisible = false;
+    appOpenAdManager.loadAd();
     WidgetsBinding.instance.addObserver(this);
-    _loadPdfDocuments();
     restoreSub();
+    _loadPdfDocuments();
 
-    appOpenAdManager.loadAd(onAdLoaded: () {
-      if (mounted) {
-        setState(() {
-          _isLoaded = true;
-        });
+    iApEngine.inAppPurchase.purchaseStream.listen((list) {
+      if (list.isNotEmpty) {
+        OnePref.setPremium(true);
+        //restore the subscription
+      } else {
+        //do nothing or deactivate the subscription if the user is premium
+        OnePref.setPremium(false);
       }
     });
-
-    IApEngine().inAppPurchase.purchaseStream.listen((list) {
-      OnePref.setPremium(list.isNotEmpty);
-    });
-
-    _checkFirestoreSubscription();
-    _checkRealtimeDatabaseSubscription();
-
-    if (widget.showPaymentSnackBar && widget.paymentSnackBarMessage != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-              widget.paymentSnackBarMessage!,
-              style: const TextStyle(color: Colors.white),
-            ),
-          ),
-        );
-      });
-    }
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    //implement dispose
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    //implement didChangeAppLifecycleState
+    super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.paused) {
       isPaused = true;
     }
     if (state == AppLifecycleState.resumed && isPaused) {
-      if (_isLoaded && !isUserPremium()) {
+      print("Resumed==========================");
+      if (_isLoaded && OnePref.getPremium() == false) {
         appOpenAdManager.showAdIfAvailable();
-      }
-      isPaused = false;
-    }
-  }
-
-  bool isUserPremium() {
-    return (OnePref.getPremium() ?? false) ||
-        isPremiumUserFirestore ||
-        isPremiumUserRealtime;
-  }
-
-  Future<void> restoreSub() async {
-    await IApEngine().inAppPurchase.restorePurchases();
-  }
-
-  Future<void> _checkFirestoreSubscription() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.email)
-          .get();
-      if (doc.exists) {
-        final data = doc.data();
-        if (data?['subscribed'] == true && data?['subscriptionEnd'] != null) {
-          final endDate = (data!['subscriptionEnd'] as Timestamp).toDate();
-          setState(() {
-            isPremiumUserFirestore = DateTime.now().isBefore(endDate);
-          });
-        }
-      }
-    }
-  }
-
-  Future<void> _checkRealtimeDatabaseSubscription() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final uid = user.uid;
-      final snapshot = await FirebaseDatabase.instance.ref('users/$uid').get();
-
-      if (snapshot.exists) {
-        final data = snapshot.value as Map<dynamic, dynamic>;
-        final isPremium = data['isPremium'] as bool? ?? false;
-        final subEndMs = data['subscriptionEnd'] as int?;
-        final endDate = subEndMs != null
-            ? DateTime.fromMillisecondsSinceEpoch(subEndMs)
-            : null;
-
-        setState(() {
-          isPremiumUserRealtime = isPremium &&
-              (endDate != null && DateTime.now().isBefore(endDate));
-        });
-
-        print("✅ Premium status (Realtime): $isPremium, Expires: $endDate");
-      } else {
-        print("🚫 No premium data found at users/$uid");
+        isPaused = false;
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-   
-
     return WillPopScope(
-      onWillPop: () async {
-        SystemNavigator.pop();
-        return true;
-      },
-      child: Scaffold(
-        body: screens[currentIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.blue,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white70,
-          currentIndex: currentIndex,
-          onTap: (index) async {
-            switch (index) {
-              case 0:
-              case 3:
-                setState(() => currentIndex = index);
-                break;
-              case 1:
-                await _handlePremiumNavigation(
-                    index, showTrendLockedDialog,
-                    showInfoDialog: true);
-                break;
-              case 2:
-                await _handlePremiumNavigation(
-                    index, showTopicsLockedDialog);
-                break;
-              case 4:
-                await _handlePremiumNavigation(
-                    index, _showDownloadLockedDialog);
-                break;
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.trending_up), label: 'Trend'),
-            BottomNavigationBarItem(icon: Icon(Icons.topic), label: 'Topics'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.workspace_premium_outlined), label: 'Premium'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.download), label: 'Download'),
-          ],
-        ),
-      ),
-    );
+        onWillPop: () async {
+          // Close the app without showing an ad
+          SystemNavigator.pop();
+
+          // Return true to indicate that the back button press is handled
+          return true;
+        },
+        child: Scaffold(
+          body: screens[currentIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.blue,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.white70,
+            currentIndex: currentIndex,
+            onTap: (index) async {
+              switch (index) {
+                case 0:
+                case 3:
+                  setState(() {
+                    currentIndex = index;
+                  });
+                  break;
+                case 1:
+                  restoreSub(); // Start restoring the subscription
+                  // You may need to wait for some time here if restoreSub() performs asynchronous operations internally.
+                  await Future.delayed(
+                      Duration(milliseconds: 500)); // Example: Wait for 1 second
+                  if (_isLoaded && OnePref.getPremium() == true) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+
+                    showPersistentDialog(context,
+                        'Trend analysis provides insight into the pattern of questions asked over a relevant period of time based on an analysis of the topics examined during those periods. Certain subjects do not necessarily follow any predictable pattern and as such the trend analysis provides the frequently examined topics in such cases. This is meant to be a guide for preparation towards the ICA examination and does not necessarily represent the topics that will be examined.');
+                  } else {
+                    showTrendLockedDialog(context);
+                  }
+                  break;
+                case 2:
+                  restoreSub(); // Start restoring the subscription
+                  // You may need to wait for some time here if restoreSub() performs asynchronous operations internally.
+                  await Future.delayed(
+                      Duration(milliseconds: 500)); // Example: Wait for 1 second
+                  if (_isLoaded && OnePref.getPremium() == true) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  } else {
+                    showTopicsLockedDialog(context);
+                  }
+
+                  break;
+                case 4:
+                  restoreSub(); // Start restoring the subscription
+                  // You may need to wait for some time here if restoreSub() performs asynchronous operations internally.
+                  await Future.delayed(
+                      Duration(seconds: 1)); // Example: Wait for 1 second
+                  if (_isLoaded && OnePref.getPremium() == true) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Scaffold(
+                          appBar: AppBar(
+                            centerTitle: true,
+                            automaticallyImplyLeading: false,
+                            title: Text(
+                              'Downloads',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                            elevation: 0,
+                            backgroundColor: Colors.blue,
+                          ),
+                          body: Stack(
+                            children: [
+                              // ListView.separated
+                              Positioned.fill(
+                                child: ListView.separated(
+                                  itemCount: pdfDocuments.length,
+                                  separatorBuilder: (context, index) => Divider(
+                                    indent: 0,
+                                    thickness: 2,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    final pdfDocument = pdfDocuments[index];
+                                    return ListTile(
+                                      title: Text(pdfDocument.title),
+                                      onTap: () {},
+                                    );
+                                  },
+                                ),
+                              ),
+                              // AlertDialog
+                              Positioned.fill(
+                                child: Container(
+                                    color: Colors.transparent,
+                                    alignment: Alignment.center,
+                                    child: AlertDialog(
+                                      backgroundColor:
+                                          Colors.blue, // Set background color
+                                      title: Text(
+                                        'Download Feature',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white, fontSize: 24,
+                                          fontWeight: FontWeight
+                                              .w600, // Set font weight
+                                        ), // Set title text color
+                                      ),
+                                      content: SingleChildScrollView(
+                                        child: Text(
+                                          'The download feature is available to premium users only. Subscribe to the premium version to get access to download and view past questions offline.',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w400,
+                                          ), // Set content text color
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text(
+                                            'OK',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight
+                                                  .w600, // Set font weight
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
+              }
+            },
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.trending_up),
+                label: 'Trend',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.topic),
+                label: 'Topics',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.workspace_premium_outlined),
+                label: 'Premium',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.download),
+                label: 'Download',
+              ),
+            ],
+          ),
+        ));
   }
 
-  Future<void> _handlePremiumNavigation(
-    int index, Function(BuildContext) lockedDialog,
-    {bool showInfoDialog = false}) async {
-  await Future.delayed(const Duration(milliseconds: 400));
-
-  final premiumStatus = isUserPremium(); // recheck fresh status
-
-  if (_isLoaded && premiumStatus) {
-    setState(() => currentIndex = index);
-    if (showInfoDialog) {
-      _showInfoDialog(
-          context,
-          'Trend analysis gives insight into the pattern of questions.'
-          'This is crafted to be a guide for your ICA exam preparation.');
-    }
-  } else {
-    lockedDialog(context);
-  }
-}
-
-
-  void _showInfoDialog(BuildContext context, String message) {
+  void showPersistentDialog(BuildContext context, String message) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.blue,
-        title: const Text('Disclaimer',
-            textAlign: TextAlign.center,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.blue, // Set background color
+          title: Text(
+            'Disclaimer', textAlign: TextAlign.center,
             style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w600)),
-        content: Text(message,
-            style: const TextStyle(
+              color: Colors.white, fontSize: 24,
+              fontWeight: FontWeight.w600, // Set font weight
+            ), // Set title text color
+          ),
+          content: SingleChildScrollView(
+            child: Text(
+              message,
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
-                fontWeight: FontWeight.w400)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600)),
+                fontWeight: FontWeight.w400,
+              ), // Set content text color
+            ),
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.white, fontSize: 20,
+                  fontWeight: FontWeight.w600, // Set font weight
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  void _showDownloadLockedDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: Colors.blue,
-        title: const Text('Download Feature',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w600)),
-        content: const Text(
-          'The download feature is available to premium users only. '
-          'Subscribe to access offline past questions.',
-          style: TextStyle(
-              color: Colors.white, fontSize: 18, fontWeight: FontWeight.w400),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600)),
-          ),
-        ],
-      ),
-    );
+  void restoreSub() {
+    iApEngine.inAppPurchase.restorePurchases();
   }
 
   Future<void> _loadPdfDocuments() async {
     try {
+      // Replace with your logic to load PDF documents from storage
       final directory = await getApplicationDocumentsDirectory();
       final files = Directory(directory.path).listSync();
 
-      pdfDocuments.clear();
+      pdfDocuments.clear(); // Clear existing documents (if any)
+
       for (var file in files) {
         if (file is File && file.path.endsWith('.pdf')) {
-          pdfDocuments.add(
-            PdfDocument(
-              title: file.uri.pathSegments.last,
-              localPath: file.path,
-              id: 1,
-            ),
-          );
+          pdfDocuments.add(PdfDocument(
+            title: file.uri.pathSegments.last,
+            localPath: file.path,
+            id: 1,
+          ));
         }
       }
-      setState(() {});
+
+      setState(() {}); // Update the UI with loaded documents
     } catch (e) {
+      // Handle any errors during loading
       print('Error loading PDF documents: $e');
     }
+  }
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 65,
+          title: Text('Non-Dismissible AlertDialog Example'),
+        ),
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AbsorbPointer(
+                    absorbing: true,
+                    child: AlertDialog(
+                      title: Text('Non-Dismissible Alert'),
+                      content:
+                          Text('This alert cannot be dismissed by the user.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(
+                                context); // Close the dialog if needed
+                          },
+                          child: Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+            child: Text('Show Non-Dismissible AlertDialog'),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class StaticDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Static Dialog'),
+      content: Text('This dialog cannot be dismissed by the user.'),
+
+      // Set barrierDismissible to false to make the dialog not dismissible
+    );
   }
 }

@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:ica_companion_pasco/pages/auth_page.dart';
+import 'package:ica_companion_pasco/paystack_home.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:onepref/onepref.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/snackbar.dart';
+import '../utils/constants.dart';
 
 class Subscriptions extends StatefulWidget {
   const Subscriptions({super.key});
@@ -85,7 +85,6 @@ class _SubscriptionsState extends State<Subscriptions> {
   @override
   void initState() {
     super.initState();
-    validatePremiumFromDatabase();
     restoreSub();
     // Check subscription status on app start
     isSubscriptionValid().then((isvalid) {
@@ -149,36 +148,6 @@ class _SubscriptionsState extends State<Subscriptions> {
     //get products
     getProducts();
     loadAd();
-  }
-
-  Future<void> validatePremiumFromDatabase() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final DatabaseReference ref =
-            FirebaseDatabase.instance.ref().child('users/${user.uid}');
-        final DataSnapshot snapshot = await ref.get();
-
-        if (snapshot.exists) {
-          final data = Map<String, dynamic>.from(snapshot.value as Map);
-          final isPremium = data['isPremium'] == true;
-          final subscriptionEnd = data['subscriptionEnd'] ?? 0;
-          final now = DateTime.now().millisecondsSinceEpoch;
-
-          if (isPremium && now < subscriptionEnd) {
-            await OnePref.setPremium(true);
-            print("✅ Premium user with valid subscription");
-          } else {
-            await OnePref.setPremium(false);
-            print("⚠️ Subscription expired or user is not premium");
-          }
-        }
-      }
-    } catch (e) {
-      print('Error checking premium status from database: $e');
-      OnePref.setPremium(false);
-    }
-    setState(() {}); // Rebuild UI
   }
 
   void getProducts() async {
@@ -286,7 +255,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                 ),
               ),
               Visibility(
-                visible: isSubscribed || valid || OnePref.getPremium() == true,
+                visible: isSubscribed || valid,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -478,72 +447,136 @@ class _SubscriptionsState extends State<Subscriptions> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.03,
                   ),
+                  Visibility(
+                    visible: !_products.isNotEmpty,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.04,
+                      width: MediaQuery.of(context).size.height * 0.04,
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.11,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0.0, horizontal: 10.0),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.11,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.blue,
-                            width: 1.0,
+                    height: MediaQuery.of(context).size.height * 0.50,
+                    child: Column(
+                      children: [
+                        Container(
+                          // color: Colors.blue,
+                          height: MediaQuery.of(context).size.height * 0.11,
+                          child: Visibility(
+                            visible: _products.isNotEmpty,
+                            child: ListView.separated(
+                              itemCount: _products.length,
+                              separatorBuilder: (BuildContext context, index) =>
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.01),
+                              itemBuilder: ((context, index) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 0.0, horizontal: 10.0),
+                                    child: Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.11,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Colors.blue,
+                                          width: 1.0,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 0.0,
+                                        ),
+                                        child: Center(
+                                          child: ListTile(
+                                            title: Text(
+                                              _products[index].price,
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            ),
+                                            subtitle: Text(
+                                              _products[index].description,
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            ),
+                                            trailing: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
+                                                foregroundColor: Colors.white,
+                                                backgroundColor: Colors.blue,
+                                                minimumSize: const Size(40, 40),
+                                                textStyle: const TextStyle(
+                                                    fontSize: 14),
+                                              ),
+                                              onPressed: () async {
+                                                
+                                                iApEngine.handlePurchase(
+                                                    _products[index],
+                                                    _productsIds);
+                                              },
+                                              child: const Text(
+                                                "Subscribe",
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                          child: Center(
-                            child: ListTile(
-                              title: Text(
-                                "GHS10.00",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                              subtitle: Text(
-                                "Monthly Subscription",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                              trailing: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.06,
+                        ),
+                        Center(
+                          child: Container(
+                            // color: Colors.amber,
+                            // height: MediaQuery.of(context).size.height * 0.065,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   foregroundColor: Colors.white,
                                   backgroundColor: Colors.blue,
-                                  minimumSize: const Size(40, 40),
-                                  textStyle: const TextStyle(fontSize: 14),
+                                  minimumSize: const Size(50, 50),
+                                  textStyle: const TextStyle(fontSize: 14)),
+                              onPressed: () async => {
+                                await InAppPurchase.instance
+                                    .restorePurchases()
+                                    .then(
+                                  (value) {
+                                    isRestore = true;
+                                    _products.clear();
+                                    getProducts();
+                                  },
                                 ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          AuthPage(onTap: () {}),
-                                    ),
-                                  );
-                                },
-                                child: const Text(
-                                  "Subscribe",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                              },
+                              child: const Text(
+                                "Restore Subscription",
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
+                        SizedBox(
                           height: MediaQuery.of(context).size.height * 0.05,
                         ),
                         Container(
@@ -556,6 +589,9 @@ class _SubscriptionsState extends State<Subscriptions> {
                                 fontSize: 15, fontWeight: FontWeight.normal),
                           ),
                         ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ],

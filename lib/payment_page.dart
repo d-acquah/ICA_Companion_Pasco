@@ -122,8 +122,7 @@ class _PaymentPageState extends State<PaymentPage> {
         context,
         MaterialPageRoute(
           builder: (context) => const BottomNavigationPage(
-            showPaymentSnackBar: true,
-            paymentSnackBarMessage: "Payment initialization error.",
+            
           ),
         ),
       );
@@ -180,10 +179,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => BottomNavigationPage(
-                                    showPaymentSnackBar: true,
-                                    paymentSnackBarMessage: verified
-                                        ? "Payment verified successfully!"
-                                        : "Payment failed or not completed. Please try again.",
+                                    
                                   ),
                                 ),
                               );

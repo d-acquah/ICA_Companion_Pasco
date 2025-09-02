@@ -44,7 +44,6 @@ final BannerAd myBanner = BannerAd(
     super.initState();
     myBanner.load();
     restoreSub();
-    validatePremiumFromDatabase();
 
     iApEngine.inAppPurchase.purchaseStream.listen((list) {
       if (list.isNotEmpty) {
@@ -108,33 +107,4 @@ final BannerAd myBanner = BannerAd(
     iApEngine.inAppPurchase.restorePurchases();
   }
   
-  Future<void> validatePremiumFromDatabase() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final DatabaseReference ref =
-            FirebaseDatabase.instance.ref().child('users/${user.uid}');
-        final DataSnapshot snapshot = await ref.get();
-
-        if (snapshot.exists) {
-          final data = Map<String, dynamic>.from(snapshot.value as Map);
-          final isPremium = data['isPremium'] == true;
-          final subscriptionEnd = data['subscriptionEnd'] ?? 0;
-          final now = DateTime.now().millisecondsSinceEpoch;
-
-          if (isPremium && now < subscriptionEnd) {
-            await OnePref.setPremium(true);
-            print("✅ Premium user with valid subscription");
-          } else {
-            await OnePref.setPremium(false);
-            print("⚠️ Subscription expired or user is not premium");
-          }
-        }
-      }
-    } catch (e) {
-      print('Error checking premium status from database: $e');
-      OnePref.setPremium(false);
-    }
-    setState(() {}); // Rebuild UI
-  }
 }
